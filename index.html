@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taverna RPG FM</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- ===================================== -->
+    <!-- HERO -->
+    <!-- ===================================== -->
+
+    <header class="hero">
+        <div class="overlay">
+            <section class="painel">
+
+                <!-- LOGO -->
+                <img src="assets/imagens/fundo.png" class="fundo" id="logo-taverna" alt="Logo Taverna RPG FM">
+
+                <!-- TÍTULO -->
+                <h1>Taverna RPG FM</h1>
+
+                <!-- SLOGAN -->
+                <p class="slogan">
+                    A Trilha Sonora das Aventuras
+                </p>
+
+                <!-- BOTÃO -->
+                <button id="ouvir">
+                    🎵 Entrar na Taverna
+                </button>
+
+            </section>
+        </div>
+    </header>
+
+    <!-- ===================================== -->
+    <!-- RÁDIO -->
+    <!-- ===================================== -->
+
+    <section class="radio">
+        <div class="caixa">
+            <h2>🎵 Rádio Ao Vivo</h2>
+
+            <!-- MOLDURA COM BANNER -->
+            <div class="radio-frame">
+                <img src="assets/imagens/radioplayer.png" 
+                     class="radio-banner" 
+                     alt="Taverna RPG FM">
+
+                <!-- Botão grande sobreposto -->
+                <button id="btn-ouvir-player" class="btn-player">
+                    ▶️ OUVIR AO VIVO
+                </button>
+            </div>
+
+            <p>Prepare sua aventura junto à fogueira.</p>
+
+            <!-- PLAYER CASTER FM (oculto inicialmente) -->
+            <div id="player-container" class="player-container">
+                <div class="cstrEmbed"
+                     data-type="newStreamPlayer"
+                     data-publicToken="44fd92bc-a57d-4f69-abba-2ed6bc214bcd"
+                     data-theme="light"
+                     data-color="e81e4d"
+                     data-channelId=""
+                     data-rendered="false">
+                    <a href="https://www.caster.fm">Shoutcast Hosting</a>
+                    <a href="https://www.caster.fm">Stream Hosting</a>
+                    <a href="https://www.caster.fm">Radio Server Hosting</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================== -->
+    <!-- COMUNIDADE -->
+    <!-- ===================================== -->
+
+  <!-- ===================================== -->
+<!-- GUILDA DA TAVERNA -->
+<!-- ===================================== -->
+
+<section class="comunidade">
+
+    <div class="caixa">
+
+        <h2>🛡️ Guilda da Taverna</h2>
+
+        <p>
+            Fortaleça a Taverna e torne-se um parceiro oficial.
+        </p>
+
+       
+            🛡️ TORNAR-SE PARCEIRO
+
+        </a>
+
+  <!-- MEMBROS DA GUILDA -->
+
+<div class="membros">
+
+    <h3>👑 Membros da Guilda</h3>
+
+    <div class="card-parceiro">
+
+        <h4>🏰 Querência Imóveis</h4>
+
+        <p>
+            Parceiro Oficial da Taverna RPG FM.
+        </p>
+
+        <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfR5ggNMMff-V4VPoj1ZhI9a-PFJEegHOaP0HWy6WbXl3absg/viewform"
+            target="_blank"
+            class="btn-card">
+
+            Conhecer
+
+        </a>
+
+    </div>
+
+</div>
+
+    </div>
+
+</section>
+
+    <!-- ===================================== -->
+    <!-- RODAPÉ -->
+    <!-- ===================================== -->
+
+    <footer>
+        <p>© 2026 Taverna RPG FM</p>
+    </footer>
+
+    <!-- ===================================== -->
+    <!-- SCRIPTS -->
+    <!-- ===================================== -->
+
+    <!-- Widget Caster FM -->
+    <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
+
+    <!-- JavaScript da Taverna -->
+    <script src="assets/js/script.js"></script>
+
+</body>
+</html>
