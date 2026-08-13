@@ -160,36 +160,6 @@
         </section>
 
         <!-- ===================================== -->
-        <!-- GUILDA DA TAVERNA                    -->
-        <!-- ===================================== -->
-        <section class="guilda" id="guilda">
-            <div class="section-head reveal">
-                <p class="eyebrow">🛡️ Hall de Guildas</p>
-                <h2 class="section-title">Guilda da <span>Taverna</span></h2>
-                <p class="section-sub">Fortaleça a Taverna e torne-se um parceiro oficial.</p>
-            </div>
-
-            <!-- Cartas de guilda (renderizadas pelo script.js a partir da lista `guildas`) -->
-            <div class="guild-cards" id="guild-cards"></div>
-
-            <div class="guilda-cta reveal">
-                <div class="guilda-cta-inner">
-                    <span class="corner tl" aria-hidden="true"></span>
-                    <span class="corner tr" aria-hidden="true"></span>
-                    <span class="corner bl" aria-hidden="true"></span>
-                    <span class="corner br" aria-hidden="true"></span>
-                    <h3>⚔️ Sua guilda pode fazer parte da Taverna</h3>
-                    <p>Empresas e projetos que compartilham da mesma aventura podem se juntar à nossa guilda.</p>
-                    <a class="btn-guilda"
-                       href="https://docs.google.com/forms/d/e/1FAIpQLSfR5ggNMMff-V4VPoj1ZhI9a-PFJEegHOaP0HWy6WbXl3absg/viewform"
-                       target="_blank" rel="noopener">
-                        🛡️ TORNAR-SE PARCEIRO
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===================================== -->
         <!-- MAPA DA TAVERNA                      -->
         <!-- ===================================== -->
         <section class="mapa" id="mapa">
@@ -338,6 +308,85 @@
         </section>
 
         <!-- ===================================== -->
+        <!-- APOIE A TAVERNA                      -->
+        <!-- ===================================== -->
+        <section class="apoie" id="apoie">
+            <div class="section-head reveal">
+                <p class="eyebrow">🍺 Mesa da Taverna</p>
+                <h2 class="section-title">Apoie a <span>Taverna</span></h2>
+                <p class="section-sub">Ajude a manter a Taverna RPG FM viva!</p>
+            </div>
+
+            <div class="apoie-card reveal">
+                <div class="apoie-card-inner">
+                    <span class="corner tl" aria-hidden="true"></span>
+                    <span class="corner tr" aria-hidden="true"></span>
+                    <span class="corner bl" aria-hidden="true"></span>
+                    <span class="corner br" aria-hidden="true"></span>
+
+                    <div class="apoie-grid">
+                        <div class="apoie-info">
+                            <p class="apoie-message">
+                                Toda grande aventura precisa de uma boa taverna.
+                                Se você curte a rádio, o universo RPG e o nosso projeto,
+                                pode deixar uma contribuição para ajudar a manter a
+                                Taverna funcionando e crescendo. ⚔️🍺
+                            </p>
+
+                            <a class="btn-apoie"
+                               href="https://livepix.gg/tavernarpgfm"
+                               target="_blank" rel="noopener">
+                                🍺 APOIAR A TAVERNA
+                            </a>
+
+                            <p class="apoie-note">🔒 Contribuição segura via LivePix · Você escolhe o valor</p>
+                        </div>
+
+                        <div class="apoie-qr">
+                            <a class="apoie-qr-link"
+                               href="https://livepix.gg/tavernarpgfm"
+                               target="_blank" rel="noopener">
+                                <div class="apoie-qr-code" id="qr-apoio" role="img"
+                                     aria-label="QR Code para apoiar a Taverna no LivePix"></div>
+                            </a>
+                            <p class="apoie-qr-hint">📱 Escaneie com a câmera ou clique para apoiar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================== -->
+        <!-- GUILDA DA TAVERNA                    -->
+        <!-- ===================================== -->
+        <section class="guilda" id="guilda">
+            <div class="section-head reveal">
+                <p class="eyebrow">🛡️ Hall de Guildas</p>
+                <h2 class="section-title">Guilda da <span>Taverna</span></h2>
+                <p class="section-sub">Fortaleça a Taverna e torne-se um parceiro oficial.</p>
+            </div>
+
+            <!-- Cartas de guilda (renderizadas pelo script.js a partir da lista `guildas`) -->
+            <div class="guild-cards" id="guild-cards"></div>
+
+            <div class="guilda-cta reveal">
+                <div class="guilda-cta-inner">
+                    <span class="corner tl" aria-hidden="true"></span>
+                    <span class="corner tr" aria-hidden="true"></span>
+                    <span class="corner bl" aria-hidden="true"></span>
+                    <span class="corner br" aria-hidden="true"></span>
+                    <h3>⚔️ Sua guilda pode fazer parte da Taverna</h3>
+                    <p>Empresas e projetos que compartilham da mesma aventura podem se juntar à nossa guilda.</p>
+                    <a class="btn-guilda"
+                       href="https://docs.google.com/forms/d/e/1FAIpQLScGzMploLOgMMjVGvrKA3aDGEtJKVTsBFSbMPbSxOAcZpxwlA/viewform?usp=publish-editor"
+                       target="_blank" rel="noopener">
+                        🛡️ TORNAR-SE PARCEIRO
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================== -->
         <!-- CRÔNICAS DA TAVERNA                  -->
         <!-- ===================================== -->
         <section class="cronicas" id="cronicas">
@@ -399,6 +448,9 @@
 
     <!-- Widget Caster FM -->
     <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
+
+    <!-- QR Code da Taverna (módulo) -->
+    <script type="module" src="./assets/js/qr.js"></script>
 
     <!-- JavaScript da Taverna -->
     <script src="./assets/js/script.js"></script>

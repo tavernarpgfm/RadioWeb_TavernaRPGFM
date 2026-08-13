@@ -469,6 +469,7 @@ header[id] {
 /* ------------------------------------------------- */
 
 .radio,
+.apoie,
 .guilda,
 .mapa,
 .cronicas {
@@ -493,6 +494,12 @@ header[id] {
     background:
         radial-gradient(ellipse 85% 60% at 50% 0%, rgba(60, 40, 20, .2), transparent 70%),
         linear-gradient(180deg, #0b0704 0%, #100a05 50%, #0b0704 100%);
+}
+
+.apoie {
+    background:
+        radial-gradient(ellipse 85% 60% at 50% 0%, rgba(150, 90, 28, .17), transparent 70%),
+        linear-gradient(180deg, #0b0704 0%, #110a05 50%, #0b0704 100%);
 }
 
 .cronicas {
@@ -1095,6 +1102,109 @@ header[id] {
 }
 
 /* ------------------------------------------------- */
+/* APOIE A TAVERNA                                  */
+/* ------------------------------------------------- */
+
+.apoie-card {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 12px;
+    border-radius: 20px;
+    background: linear-gradient(120deg, var(--bronze), var(--gold), var(--bronze));
+}
+
+.apoie-card-inner {
+    position: relative;
+    padding: clamp(1.8rem, 5vw, 2.8rem);
+    background: linear-gradient(165deg, #1c1208 0%, #120b05 100%);
+    border-radius: 13px;
+}
+
+.apoie-grid {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    align-items: center;
+    gap: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+.apoie-message {
+    font-size: 1.12rem;
+    line-height: 1.7;
+    color: #d9c9a6;
+    font-style: italic;
+    margin-bottom: 1.7rem;
+}
+
+.btn-apoie {
+    display: inline-block;
+    padding: 1rem 2.2rem;
+    border: 1px solid #f0d080;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #a8601f 0%, #6e3412 100%);
+    box-shadow: 0 0 28px rgba(232, 130, 60, .3), inset 0 1px 0 rgba(255, 220, 170, .35);
+    color: #fff7e6;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: .82rem;
+    letter-spacing: .22em;
+    text-decoration: none;
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.btn-apoie:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 42px rgba(232, 140, 70, .5), inset 0 1px 0 rgba(255, 220, 170, .45);
+}
+
+.apoie-note {
+    margin-top: 1.1rem;
+    font-family: var(--font-title);
+    font-size: .6rem;
+    letter-spacing: .2em;
+    color: var(--faint);
+}
+
+.apoie-qr {
+    text-align: center;
+}
+
+.apoie-qr-link {
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .5), 0 0 30px rgba(212, 162, 78, .18);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.apoie-qr-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 52px rgba(0, 0, 0, .6), 0 0 40px rgba(212, 162, 78, .3);
+}
+
+.apoie-qr-code {
+    width: 176px;
+    height: 176px;
+    background: #fff;
+}
+
+.apoie-qr-code svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.apoie-qr-hint {
+    margin-top: .9rem;
+    font-family: var(--font-title);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    color: var(--muted);
+}
+
+/* ------------------------------------------------- */
 /* CRÔNICAS DA TAVERNA                              */
 /* ------------------------------------------------- */
 
@@ -1312,6 +1422,17 @@ header[id] {
     .timeline-item {
         padding-left: 48px;
     }
+
+    .apoie-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .apoie-message {
+        max-width: 52ch;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 @media (max-width: 600px) {
@@ -1359,6 +1480,20 @@ header[id] {
     .map-legend {
         font-size: .58rem;
         gap: .4rem 1rem;
+    }
+
+    .apoie-card-inner {
+        padding: 2rem 1.2rem;
+    }
+
+    .apoie-qr-code {
+        width: 150px;
+        height: 150px;
+    }
+
+    .btn-apoie {
+        padding: .9rem 1.6rem;
+        letter-spacing: .16em;
     }
 }
 
