@@ -470,6 +470,7 @@ header[id] {
 
 .radio,
 .apoie,
+.parceiro,
 .guilda,
 .mapa,
 .cronicas {
@@ -500,6 +501,12 @@ header[id] {
     background:
         radial-gradient(ellipse 85% 60% at 50% 0%, rgba(150, 90, 28, .17), transparent 70%),
         linear-gradient(180deg, #0b0704 0%, #110a05 50%, #0b0704 100%);
+}
+
+.parceiro {
+    background:
+        radial-gradient(ellipse 80% 55% at 50% 100%, rgba(90, 60, 25, .18), transparent 70%),
+        linear-gradient(180deg, #0c0703 0%, #120b05 50%, #0c0703 100%);
 }
 
 .cronicas {
@@ -1133,7 +1140,45 @@ header[id] {
     line-height: 1.7;
     color: #d9c9a6;
     font-style: italic;
-    margin-bottom: 1.7rem;
+    margin-bottom: 1.5rem;
+}
+
+.apoie-complement {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+}
+
+.apoie-complement strong {
+    color: var(--gold-2);
+    font-weight: 700;
+}
+
+.apoie-coins {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .3rem 1rem;
+    margin-bottom: 1.5rem;
+    padding: .65rem 1rem;
+    border: 1px dashed rgba(212, 162, 78, .35);
+    border-radius: 10px;
+    background: rgba(212, 162, 78, .06);
+}
+
+.apoie-coins-label {
+    font-family: var(--font-title);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .24em;
+    color: var(--gold);
+}
+
+.apoie-coins-hint {
+    font-style: italic;
+    font-size: .95rem;
+    color: #c8b68f;
 }
 
 .btn-apoie {
@@ -1432,6 +1477,10 @@ header[id] {
         max-width: 52ch;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .apoie-coins {
+        justify-content: center;
     }
 }
 
