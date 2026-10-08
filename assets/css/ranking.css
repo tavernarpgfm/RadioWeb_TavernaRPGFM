@@ -1,0 +1,690 @@
+/* ================================================= */
+/* TAVERNA RPG FM — Ranking dos Arautos              */
+/* assets/css/ranking.css                            */
+/*                                                   */
+/* Estilos exclusivos de ranking.html.               */
+/* Não depende de assets/css/style.css e não         */
+/* interfere no site principal.                      */
+/* ================================================= */
+
+:root {
+    --au-bg: #0a0604;
+    --au-bg-soft: #150e08;
+    --au-panel: rgba(28, 19, 11, 0.86);
+    --au-panel-2: rgba(20, 13, 7, 0.92);
+    --au-border: #6b4e2a;
+    --au-border-soft: rgba(212, 162, 78, 0.28);
+    --au-gold: #d4a24e;
+    --au-gold-soft: #f0cf8f;
+    --au-crimson: #e81e4d;
+    --au-text: #efe3cf;
+    --au-muted: #b39d80;
+    --au-silver: #cfd6dc;
+    --au-bronze: #c98b52;
+    --au-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+    --au-radius: 14px;
+    --au-font-title: "Cinzel", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --au-font-body: "Crimson Text", Georgia, "Times New Roman", serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--au-bg);
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(232, 120, 60, 0.14), transparent 55%),
+        radial-gradient(circle at 50% 120%, rgba(212, 162, 78, 0.10), transparent 60%),
+        linear-gradient(180deg, #0a0604 0%, #100a06 45%, #0a0604 100%);
+    color: var(--au-text);
+    font-family: var(--au-font-body);
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- fundo decorativo ---------- */
+
+.au-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.au-bg-glow {
+    position: absolute;
+    left: 50%;
+    top: -20vh;
+    width: 120vw;
+    max-width: 1200px;
+    height: 70vh;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(240, 176, 96, 0.16), transparent 70%);
+    filter: blur(4px);
+}
+
+.au-bg-fire {
+    position: absolute;
+    left: 50%;
+    bottom: -18vh;
+    width: 90vw;
+    max-width: 900px;
+    height: 45vh;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(232, 30, 77, 0.12), transparent 70%);
+}
+
+/* ---------- cabeçalho ---------- */
+
+.au-header,
+.au-main,
+.au-footer {
+    position: relative;
+    z-index: 1;
+}
+
+.au-header {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 20px 12px;
+    text-align: center;
+}
+
+.au-eyebrow {
+    margin: 0 0 10px;
+    color: var(--au-gold);
+    font-family: var(--au-font-title);
+    font-size: 0.82rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+}
+
+.au-title {
+    margin: 0;
+    font-family: var(--au-font-title);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    line-height: 1.05;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #fff4dc 0%, var(--au-gold-soft) 45%, var(--au-gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 22px rgba(212, 162, 78, 0.18);
+}
+
+.au-title span {
+    color: var(--au-gold);
+    background: none;
+    -webkit-text-fill-color: var(--au-gold);
+}
+
+.au-sub {
+    margin: 12px 0 0;
+    color: var(--au-muted);
+    font-size: 1.02rem;
+    letter-spacing: 0.04em;
+}
+
+.au-note {
+    max-width: 720px;
+    margin: 18px auto 0;
+    padding: 12px 16px;
+    border: 1px solid var(--au-border-soft);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--au-muted);
+    font-size: 0.92rem;
+}
+
+.au-note strong {
+    color: var(--au-gold-soft);
+}
+
+.au-back-line {
+    margin: 18px 0 0;
+}
+
+.au-back {
+    color: var(--au-gold);
+    font-family: var(--au-font-title);
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.au-back:hover,
+.au-back:focus-visible {
+    color: var(--au-gold-soft);
+    border-bottom-color: currentColor;
+}
+
+/* ---------- estrutura ---------- */
+
+.au-main {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 20px 20px 40px;
+    display: grid;
+    gap: 26px;
+}
+
+.au-rank {
+    display: grid;
+    gap: 14px;
+}
+
+.au-panel {
+    position: relative;
+    padding: 22px;
+    border: 1px solid var(--au-border);
+    border-radius: var(--au-radius);
+    background: linear-gradient(180deg, var(--au-panel) 0%, var(--au-panel-2) 100%);
+    box-shadow: var(--au-shadow);
+}
+
+.au-panel::before,
+.au-panel::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--au-gold);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.au-panel::before {
+    top: 8px;
+    left: 8px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.au-panel::after {
+    right: 8px;
+    bottom: 8px;
+    border-left: none;
+    border-top: none;
+}
+
+.au-panel-title {
+    margin: 0 0 6px;
+    font-family: var(--au-font-title);
+    font-size: 1.12rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--au-gold-soft);
+}
+
+.au-panel-hint {
+    margin: 0 0 18px;
+    color: var(--au-muted);
+    font-size: 0.92rem;
+}
+
+/* ---------- formulário ---------- */
+
+.au-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.au-field {
+    display: grid;
+    gap: 6px;
+}
+
+.au-label {
+    color: var(--au-muted);
+    font-family: var(--au-font-title);
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.au-input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--au-border);
+    border-radius: 9px;
+    background: rgba(8, 5, 3, 0.85);
+    color: var(--au-text);
+    font-family: var(--au-font-body);
+    font-size: 1rem;
+}
+
+.au-input:focus-visible {
+    outline: 2px solid var(--au-gold);
+    outline-offset: 1px;
+    border-color: var(--au-gold);
+}
+
+.au-input[readonly] {
+    color: var(--au-muted);
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.86rem;
+}
+
+.au-field-hint {
+    margin: 10px 0 0;
+    color: var(--au-muted);
+    font-size: 0.84rem;
+}
+
+.au-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ---------- botões ---------- */
+
+.au-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: 1px solid var(--au-border);
+    border-radius: 9px;
+    background: linear-gradient(180deg, rgba(70, 48, 26, 0.85), rgba(38, 25, 13, 0.9));
+    color: var(--au-gold-soft);
+    font-family: var(--au-font-title);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.au-btn:hover:not(:disabled),
+.au-btn:focus-visible:not(:disabled) {
+    filter: brightness(1.15);
+    box-shadow: 0 0 0 1px var(--au-border-soft), 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.au-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.au-btn:disabled {
+    opacity: 0.55;
+    cursor: progress;
+}
+
+.au-btn-primary {
+    border-color: rgba(240, 207, 143, 0.7);
+    background: linear-gradient(180deg, #e0b263 0%, #b3791f 100%);
+    color: #1b1006;
+    font-weight: 700;
+}
+
+.au-btn-ghost {
+    background: transparent;
+    color: var(--au-muted);
+}
+
+.au-btn-small {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+}
+
+/* ---------- status ---------- */
+
+.au-status {
+    margin: 16px 0 0;
+    min-height: 1.2em;
+    font-size: 0.94rem;
+    color: var(--au-muted);
+}
+
+.au-status.is-ok {
+    color: #9fd89a;
+}
+
+.au-status.is-warn {
+    color: var(--au-gold-soft);
+}
+
+.au-status.is-error {
+    color: #ff9a9a;
+}
+
+/* ---------- "meu arauto" resultado ---------- */
+
+.au-me-card {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid var(--au-border-soft);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.au-me-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.au-stat {
+    padding: 10px 12px;
+    border: 1px solid var(--au-border-soft);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(40, 27, 15, 0.7), rgba(20, 13, 7, 0.7));
+}
+
+.au-stat-label {
+    display: block;
+    color: var(--au-muted);
+    font-family: var(--au-font-title);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.au-stat-value {
+    display: block;
+    margin-top: 4px;
+    color: var(--au-gold-soft);
+    font-family: var(--au-font-title);
+    font-size: 1.18rem;
+}
+
+.au-me-name {
+    margin: 0 0 12px;
+    font-family: var(--au-font-title);
+    font-size: 1.05rem;
+    color: var(--au-gold-soft);
+}
+
+/* ---------- abas ---------- */
+
+.au-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.au-tab {
+    padding: 10px 16px;
+    border: 1px solid var(--au-border);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background: rgba(15, 10, 6, 0.85);
+    color: var(--au-muted);
+    font-family: var(--au-font-title);
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.au-tab.is-active {
+    background: linear-gradient(180deg, rgba(60, 41, 22, 0.95), rgba(28, 19, 11, 0.95));
+    color: var(--au-gold-soft);
+    border-color: var(--au-gold);
+}
+
+.au-tab:focus-visible {
+    outline: 2px solid var(--au-gold);
+    outline-offset: 2px;
+}
+
+.au-period {
+    margin: 0 0 10px;
+    color: var(--au-muted);
+    font-size: 0.88rem;
+}
+
+/* ---------- lista do ranking ---------- */
+
+.au-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.au-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--au-border-soft);
+    border-left: 3px solid var(--au-border);
+    border-radius: 10px;
+    background: rgba(16, 10, 6, 0.72);
+}
+
+.au-row.is-empty {
+    grid-template-columns: 1fr;
+    color: var(--au-muted);
+    font-style: italic;
+}
+
+.au-pos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 4px 8px;
+    border: 1px solid var(--au-border);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--au-muted);
+    font-family: var(--au-font-title);
+    font-size: 0.92rem;
+}
+
+.au-name {
+    color: var(--au-text);
+    font-size: 1.02rem;
+    overflow-wrap: anywhere;
+}
+
+.au-xp {
+    color: var(--au-gold-soft);
+    font-family: var(--au-font-title);
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+/* Top 3 */
+.au-row.pos-1 {
+    border-left-color: #f6d488;
+    background: linear-gradient(90deg, rgba(246, 212, 136, 0.16), rgba(16, 10, 6, 0.72) 60%);
+    box-shadow: 0 0 22px rgba(246, 212, 136, 0.12);
+}
+
+.au-row.pos-1 .au-pos {
+    border-color: #f6d488;
+    background: linear-gradient(180deg, #f6d488, #c9973a);
+    color: #1b1006;
+}
+
+.au-row.pos-2 {
+    border-left-color: var(--au-silver);
+    background: linear-gradient(90deg, rgba(207, 214, 220, 0.12), rgba(16, 10, 6, 0.72) 60%);
+}
+
+.au-row.pos-2 .au-pos {
+    border-color: var(--au-silver);
+    color: var(--au-silver);
+}
+
+.au-row.pos-3 {
+    border-left-color: var(--au-bronze);
+    background: linear-gradient(90deg, rgba(201, 139, 82, 0.12), rgba(16, 10, 6, 0.72) 60%);
+}
+
+.au-row.pos-3 .au-pos {
+    border-color: var(--au-bronze);
+    color: var(--au-bronze);
+}
+
+.au-row.is-me {
+    outline: 1px solid var(--au-crimson);
+    outline-offset: -1px;
+}
+
+/* ---------- paginação ---------- */
+
+.au-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.au-page-info {
+    color: var(--au-muted);
+    font-family: var(--au-font-title);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+
+/* ---------- campeões ---------- */
+
+.au-champions {
+    display: grid;
+    gap: 16px;
+}
+
+.au-champion-month {
+    padding: 14px;
+    border: 1px solid var(--au-border-soft);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.28);
+}
+
+.au-champion-title {
+    margin: 0 0 10px;
+    color: var(--au-gold-soft);
+    font-family: var(--au-font-title);
+    font-size: 0.94rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.au-champion-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.au-champion-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--au-text);
+    font-size: 0.98rem;
+}
+
+.au-champion-item .au-xp {
+    font-size: 0.9rem;
+}
+
+/* ---------- rodapé ---------- */
+
+.au-footer {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    text-align: center;
+    color: var(--au-muted);
+    font-size: 0.86rem;
+}
+
+.au-footer p {
+    margin: 4px 0;
+}
+
+.au-footer p:first-child {
+    color: var(--au-gold);
+    font-family: var(--au-font-title);
+    letter-spacing: 0.18em;
+}
+
+.au-footer-note {
+    opacity: 0.8;
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 720px) {
+    body {
+        font-size: 17px;
+    }
+
+    .au-header {
+        padding-top: 40px;
+    }
+
+    .au-main {
+        padding: 16px 14px 32px;
+        gap: 20px;
+    }
+
+    .au-panel {
+        padding: 18px 16px;
+    }
+
+    .au-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .au-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .au-btn {
+        justify-content: center;
+    }
+
+    .au-row {
+        grid-template-columns: 48px 1fr auto;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .au-name {
+        font-size: 0.96rem;
+    }
+
+    .au-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+        padding: 9px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .au-btn,
+    .au-back {
+        transition: none;
+    }
+}

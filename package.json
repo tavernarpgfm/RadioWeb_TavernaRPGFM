@@ -11,6 +11,7 @@
     "vite": "^7.0.0"
   },
   "dependencies": {
+    "convex": "^1.46.0",
     "qrcode-generator": "^2.0.4"
   }
 }
