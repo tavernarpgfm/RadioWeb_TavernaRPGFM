@@ -2,9 +2,12 @@
 /* TAVERNA RPG FM — Ranking dos Arautos              */
 /* assets/css/ranking.css                            */
 /*                                                   */
-/* Estilos exclusivos de ranking.html.               */
-/* Não depende de assets/css/style.css e não         */
-/* interfere no site principal.                      */
+/* Estilos da seção “Ranking dos Arautos”, que vive  */
+/* DENTRO da index.html (logo abaixo da Guilda).     */
+/*                                                   */
+/* IMPORTANTE: tudo aqui está sob .au-scope ou sob   */
+/* .au-*: a seção não redefine nada global, então o  */
+/* restante do site continua exatamente como era.    */
 /* ================================================= */
 
 :root {
@@ -27,23 +30,25 @@
     --au-font-body: "Crimson Text", Georgia, "Times New Roman", serif;
 }
 
-* {
-    box-sizing: border-box;
-}
+/* ---------- a seção, dentro da página principal ---------- */
 
-html,
-body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    min-height: 100vh;
+#rank.rank-au {
+    position: relative;
+    overflow: hidden;
+    padding: 64px 0 72px;
+    border-top: 1px solid rgba(212, 162, 78, 0.22);
+    border-bottom: 1px solid rgba(212, 162, 78, 0.22);
     background-color: var(--au-bg);
     background-image:
         radial-gradient(circle at 50% 0%, rgba(232, 120, 60, 0.14), transparent 55%),
         radial-gradient(circle at 50% 120%, rgba(212, 162, 78, 0.10), transparent 60%),
         linear-gradient(180deg, #0a0604 0%, #100a06 45%, #0a0604 100%);
+}
+
+/* Raiz de escopo: as cores/tipografia do ranking valem SÓ aqui dentro,
+   nunca no restante da Taverna. */
+.au-scope {
+    position: relative;
     color: var(--au-text);
     font-family: var(--au-font-body);
     font-size: 18px;
@@ -54,7 +59,7 @@ body {
 /* ---------- fundo decorativo ---------- */
 
 .au-bg {
-    position: fixed;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     overflow: hidden;
@@ -605,6 +610,50 @@ body {
     font-size: 0.9rem;
 }
 
+/* ---------- castelo do mapa (atalho para o salão) ---------- */
+
+.map-taverna-link {
+    cursor: pointer;
+}
+
+.map-taverna-link:hover .map-label-main,
+.map-taverna-link:focus-visible .map-label-main {
+    fill: #f0cf8f;
+}
+
+/* ---------- divulgação / compartilhamento ---------- */
+
+.au-share-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.au-share-btn {
+    justify-content: center;
+}
+
+.au-share-fallback {
+    margin-top: 12px;
+}
+
+.au-session {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 6px 12px;
+    border: 1px solid var(--au-border-soft);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.32);
+    color: var(--au-muted);
+    font-size: 0.82rem;
+}
+
+.au-session.is-on {
+    color: var(--au-gold-soft);
+    border-color: var(--au-border);
+}
+
 /* ---------- rodapé ---------- */
 
 .au-footer {
@@ -633,8 +682,16 @@ body {
 /* ---------- responsivo ---------- */
 
 @media (max-width: 720px) {
-    body {
+    .au-scope {
         font-size: 17px;
+    }
+
+    #rank.rank-au {
+        padding: 44px 0 52px;
+    }
+
+    .au-share-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
     .au-header {

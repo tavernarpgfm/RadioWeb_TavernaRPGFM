@@ -5,128 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking dos Arautos — Taverna RPG FM</title>
-    <meta name="description" content="Ranking dos Arautos da Taverna RPG FM — o salão de honra de quem compartilha a Taverna pelo mundo.">
-    <meta name="theme-color" content="#0a0604">
     <meta name="robots" content="noindex">
+    <link rel="canonical" href="./index.html#rank">
+    <meta http-equiv="refresh" content="0; url=./index.html#rank">
+    <meta name="theme-color" content="#0a0604">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-content: center;
+            gap: 12px;
+            padding: 24px;
+            background: #0a0604;
+            color: #efe3cf;
+            font-family: Georgia, "Times New Roman", serif;
+            text-align: center;
+        }
 
-    <!-- Estilos próprios do ranking (independentes do site principal) -->
-    <link rel="stylesheet" href="./assets/css/ranking.css">
+        a {
+            color: #f0cf8f;
+        }
+    </style>
 </head>
 
 <body>
+    <p>
+        👑 O <strong>Ranking dos Arautos</strong> agora vive dentro da página principal da Taverna —
+        assim a rádio não para de tocar enquanto você compartilha.
+    </p>
+    <p><a href="./index.html#rank">Ir para o Ranking dos Arautos →</a></p>
 
-    <!-- Brilho decorativo de fogueira -->
-    <div class="au-bg" aria-hidden="true">
-        <span class="au-bg-glow"></span>
-        <span class="au-bg-fire"></span>
-    </div>
-
-    <header class="au-header">
-        <p class="au-eyebrow">✦ Salão dos Arautos ✦</p>
-        <h1 class="au-title">Ranking dos <span>Arautos</span></h1>
-        <p class="au-sub">Taverna RPG FM — A Trilha Sonora das Aventuras</p>
-        <p class="au-note">
-            A cada dia, ao iniciar uma ação de compartilhamento, você recebe <strong>+1 XP</strong>.
-            O registro comprova que a ação foi iniciada aqui no site — não comprova que a publicação
-            externa foi concluída.
-        </p>
-        <p class="au-back-line">
-            <a class="au-back" href="./index.html">← Voltar à Taverna</a>
-        </p>
-    </header>
-
-    <main class="au-main">
-
-        <!-- ===================================== -->
-        <!-- MEU ARAUTO                            -->
-        <!-- ===================================== -->
-        <section class="au-panel au-me" aria-labelledby="me-title">
-            <h2 class="au-panel-title" id="me-title">🎲 Meu Arauto</h2>
-            <p class="au-panel-hint">
-                Sem cadastro de e-mail: escolha um <strong>apelido</strong> e uma <strong>senha</strong>.
-                Os dois juntos são a sua chave no ranking.
-            </p>
-
-            <div class="au-fields">
-                <label class="au-field">
-                    <span class="au-label">Apelido público</span>
-                    <input id="nickname" class="au-input" type="text" maxlength="20"
-                           placeholder="3 a 20 caracteres" spellcheck="false"
-                           autocomplete="off" aria-describedby="identity-hint">
-                </label>
-
-                <label class="au-field">
-                    <span class="au-label">Senha do arauto</span>
-                    <input id="password" class="au-input" type="password" maxlength="64"
-                           placeholder="mínimo 6 caracteres" spellcheck="false"
-                           autocomplete="off" aria-describedby="identity-hint">
-                </label>
-            </div>
-
-            <p class="au-field-hint" id="identity-hint">
-                🔐 A senha <strong>nunca sai deste navegador</strong>: enviamos ao servidor apenas um
-                código derivado dela junto com o apelido. Não existe recuperação de senha — anote seus
-                dados. Se esquecer a senha (ou trocar o apelido), você passa a ser um novo arauto,
-                começando do zero.
-            </p>
-
-            <div class="au-actions">
-                <button id="btn-share" class="au-btn au-btn-primary" type="button">
-                    🎁 Registrar compartilhamento de hoje
-                </button>
-                <button id="btn-me" class="au-btn" type="button">🔎 Ver minha posição</button>
-                <button id="btn-clear" class="au-btn au-btn-ghost" type="button">🧹 Limpar campos</button>
-            </div>
-
-            <p id="status" class="au-status" role="status" aria-live="polite"></p>
-
-            <div id="me-card" class="au-me-card" hidden aria-live="polite"></div>
-        </section>
-
-        <!-- ===================================== -->
-        <!-- RANKING                               -->
-        <!-- ===================================== -->
-        <section class="au-rank" aria-labelledby="rank-title">
-            <h2 class="au-panel-title" id="rank-title">⚔️ Salão de Honra</h2>
-
-            <div class="au-tabs" role="tablist" aria-label="Tipos de ranking">
-                <button id="tab-general" class="au-tab is-active" type="button" role="tab"
-                        aria-selected="true" data-view="general">🏆 Ranking Geral</button>
-                <button id="tab-monthly" class="au-tab" type="button" role="tab"
-                        aria-selected="false" data-view="monthly">🗓️ Ranking Mensal</button>
-                <button id="tab-champions" class="au-tab" type="button" role="tab"
-                        aria-selected="false" data-view="champions">👑 Campeões</button>
-            </div>
-
-            <div class="au-panel">
-                <p id="rank-period" class="au-period"></p>
-
-                <p id="rank-status" class="au-status" role="status" aria-live="polite"></p>
-
-                <ol id="rank-list" class="au-list"></ol>
-
-                <nav id="pager" class="au-pager" hidden aria-label="Paginação do ranking">
-                    <button id="prev-page" class="au-btn au-btn-small" type="button">‹ Anterior</button>
-                    <span id="page-info" class="au-page-info"></span>
-                    <button id="next-page" class="au-btn au-btn-small" type="button">Próxima ›</button>
-                </nav>
-
-                <div id="champions" class="au-champions" hidden></div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="au-footer">
-        <p>🏰 TAVERNA RPG FM — Salão dos Arautos</p>
-        <p class="au-footer-note">
-            Ranking sem cadastro de e-mail, com apelido e senha escolhidos pelo aventureiro.
-            Pontuação validada no servidor (1 XP por dia por arauto).
-        </p>
-    </footer>
-
-    <script src="./assets/js/ranking.js"></script>
-
+    <script>window.location.replace('./index.html#rank');</script>
 </body>
 
 </html>

@@ -20,6 +20,9 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- CSS do Ranking dos Arautos (seção desta mesma página) -->
+    <link rel="stylesheet" href="./assets/css/ranking.css">
 </head>
 
 <body>
@@ -48,7 +51,7 @@
             <li><a href="#guilda">🛡️ Guilda</a></li>
             <li><a href="#mapa">🗺️ Mapa</a></li>
             <li><a href="#cronicas">📜 Crônicas</a></li>
-            <li><a href="./ranking.html">👑 Rank Membros</a></li>
+            <li><a href="#rank">👑 Rank Membros</a></li>
         </ul>
     </nav>
 
@@ -351,7 +354,9 @@
                         <path d="M500 300 Q600 420 740 470"></path>
                     </g>
 
-                    <!-- Castelo da Taverna (centro) -->
+                    <!-- Castelo da Taverna (centro) — clicar leva ao Ranking dos Arautos -->
+                    <a href="#rank" xlink:href="#rank" class="map-taverna-link" aria-label="Ir para o Ranking dos Arautos">
+                        <title>Clique para ver o Ranking dos Arautos</title>
                     <g class="map-taverna">
                         <circle cx="500" cy="300" r="40" fill="none" stroke="#d4a24e" stroke-width="1.5" stroke-dasharray="3 5" opacity=".7"></circle>
                         <rect x="492" y="266" width="16" height="30" fill="#2a1c10" stroke="#d4a24e" stroke-width="2"></rect>
@@ -363,6 +368,7 @@
                         <circle cx="500" cy="305" r="2.5" fill="#e8973c"></circle>
                         <text x="500" y="366" text-anchor="middle" class="map-label map-label-main">TAVERNA RPG FM</text>
                     </g>
+                    </a>
 
                     <!-- Rótulos de regiões -->
                     <text x="196" y="86" text-anchor="middle" class="map-label map-label-water">MAR DE NÉVOA</text>
@@ -384,8 +390,8 @@
 
                 <div class="map-tooltip" id="map-tooltip" role="tooltip"></div>
 
-                <p class="map-legend" aria-hidden="true">
-                    <span>🏰 Taverna</span>
+                <p class="map-legend">
+                    <span>🏰 Taverna (clique para o Ranking)</span>
                     <span>🛡️ Guildas aliadas</span>
                     <span>✦ Regiões</span>
                 </p>
@@ -404,6 +410,127 @@
 
             <!-- Cartas de guilda (renderizadas pelo script.js a partir da lista `guildas`) -->
             <div class="guild-cards" id="guild-cards"></div>
+        </section>
+
+        <!-- ===================================== -->
+        <!-- RANKING DOS ARAUTOS                  -->
+        <!-- ===================================== -->
+        <section class="rank-au" id="rank">
+            <div class="au-scope">
+
+                <!-- Brilho decorativo de fogueira (contido nesta seção) -->
+                <div class="au-bg" aria-hidden="true">
+                    <span class="au-bg-glow"></span>
+                    <span class="au-bg-fire"></span>
+                </div>
+
+                <div class="section-head reveal">
+                    <p class="eyebrow">👑 Salão dos Arautos</p>
+                    <h2 class="section-title">Ranking dos <span>Arautos</span></h2>
+                    <p class="section-sub">
+                        Compartilhe a Taverna e ganhe <strong>+1 XP por dia</strong>.
+                        O registro comprova que a ação de compartilhar foi iniciada aqui no site.
+                    </p>
+                </div>
+
+                <div class="au-main">
+
+                    <!-- MEU ARAUTO -->
+                    <section class="au-panel" aria-labelledby="me-title">
+                        <h3 class="au-panel-title" id="me-title">🎲 Meu Arauto</h3>
+                        <p class="au-panel-hint">
+                            Sem cadastro de e-mail: escolha um <strong>apelido</strong>
+                            (único no ranking) e uma <strong>senha</strong>.
+                            Os dois juntos são a sua chave no salão.
+                        </p>
+
+                        <div class="au-fields">
+                            <label class="au-field">
+                                <span class="au-label">Apelido público</span>
+                                <input id="nickname" class="au-input" type="text" maxlength="20"
+                                       placeholder="3 a 20 caracteres" spellcheck="false"
+                                       autocomplete="off" aria-describedby="identity-hint">
+                            </label>
+
+                            <label class="au-field">
+                                <span class="au-label">Senha do arauto</span>
+                                <input id="password" class="au-input" type="password" maxlength="64"
+                                       placeholder="mínimo 6 caracteres" spellcheck="false"
+                                       autocomplete="off" aria-describedby="identity-hint">
+                            </label>
+                        </div>
+
+                        <p class="au-field-hint" id="identity-hint">
+                            🔐 A senha <strong>nunca sai deste navegador</strong>: enviamos ao servidor
+                            apenas um código derivado dela junto com o apelido. Cada apelido pertence a
+                            um único arauto. Não existe recuperação de senha — anote seus dados.
+                        </p>
+
+                        <div class="au-actions">
+                            <button id="btn-login" class="au-btn au-btn-primary" type="button">
+                                🛡️ Entrar no salão
+                            </button>
+                            <button id="btn-clear" class="au-btn au-btn-ghost" type="button">
+                                🧹 Limpar campos
+                            </button>
+                        </div>
+
+                        <p id="status" class="au-status" role="status" aria-live="polite"></p>
+
+                        <div id="me-card" class="au-me-card" hidden aria-live="polite"></div>
+                    </section>
+
+                    <!-- DIVULGAR / COMPARTILHAR -->
+                    <section class="au-panel" aria-labelledby="share-title">
+                        <h3 class="au-panel-title" id="share-title">📣 Divulgar a Taverna</h3>
+                        <p class="au-panel-hint" id="share-hint">
+                            Entre no salão com apelido e senha para liberar o compartilhamento.
+                        </p>
+
+                        <div class="au-share-grid">
+                            <button class="au-btn au-share-btn" type="button" data-canal="whatsapp">💬 WhatsApp</button>
+                            <button class="au-btn au-share-btn" type="button" data-canal="telegram">✈️ Telegram</button>
+                            <button class="au-btn au-share-btn" type="button" data-canal="x">𝕏 X / Twitter</button>
+                            <button class="au-btn au-share-btn" type="button" data-canal="facebook">📘 Facebook</button>
+                            <button id="btn-apps" class="au-btn au-share-btn" type="button" data-canal="apps">🎮 Discord &amp; outros apps</button>
+                            <button class="au-btn au-share-btn" type="button" data-canal="copiar">🔗 Copiar link</button>
+                        </div>
+
+                        <p id="share-status" class="au-status" role="status" aria-live="polite"></p>
+                    </section>
+
+                    <!-- RANKING -->
+                    <section class="au-rank" aria-labelledby="rank-title">
+                        <h3 class="au-panel-title" id="rank-title">⚔️ Salão de Honra</h3>
+
+                        <div class="au-tabs" role="tablist" aria-label="Tipos de ranking">
+                            <button id="tab-general" class="au-tab is-active" type="button" role="tab"
+                                    aria-selected="true" data-view="general">🏆 Ranking Geral</button>
+                            <button id="tab-monthly" class="au-tab" type="button" role="tab"
+                                    aria-selected="false" data-view="monthly">🗓️ Ranking Mensal</button>
+                            <button id="tab-champions" class="au-tab" type="button" role="tab"
+                                    aria-selected="false" data-view="champions">👑 Campeões</button>
+                        </div>
+
+                        <div class="au-panel">
+                            <p id="rank-period" class="au-period"></p>
+
+                            <p id="rank-status" class="au-status" role="status" aria-live="polite"></p>
+
+                            <ol id="rank-list" class="au-list"></ol>
+
+                            <nav id="pager" class="au-pager" hidden aria-label="Paginação do ranking">
+                                <button id="prev-page" class="au-btn au-btn-small" type="button">‹ Anterior</button>
+                                <span id="page-info" class="au-page-info"></span>
+                                <button id="next-page" class="au-btn au-btn-small" type="button">Próxima ›</button>
+                            </nav>
+
+                            <div id="champions" class="au-champions" hidden></div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
         </section>
 
         <!-- ===================================== -->
@@ -445,6 +572,14 @@
                         <p>Uma nova aventura começou.</p>
                     </div>
                 </li>
+                <li class="timeline-item reveal">
+                    <span class="timeline-dot" aria-hidden="true">👑</span>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Capítulo V</span>
+                        <p>O Salão dos Arautos foi aberto: quem compartilha a Taverna ganha
+                           +1 XP por dia e entra no Ranking dos Membros, aqui mesmo nesta página.</p>
+                    </div>
+                </li>
             </ol>
         </section>
 
@@ -472,6 +607,9 @@
     <!-- QR Code da Taverna (biblioteca local + inicialização) -->
     <script src="./assets/js/qrcode.js"></script>
     <script src="./assets/js/qr.js"></script>
+
+    <!-- Ranking dos Arautos (seção desta página) -->
+    <script src="./assets/js/ranking.js"></script>
 
     <!-- JavaScript da Taverna -->
     <script src="./assets/js/script.js"></script>

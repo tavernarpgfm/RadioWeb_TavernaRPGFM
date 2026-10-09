@@ -8,6 +8,7 @@
 //
 // Regras:
 //   • 1 XP por identificador por dia;
+//   • um apelido pertence a um único arauto (apelido único);
 //   • o XP NUNCA vem do cliente (não existe argumento de XP);
 //   • deduplicação garantida no backend pelo índice
 //     by_identifier_dayKey (mutations do Convex são
@@ -131,6 +132,20 @@ export function normalizeNickname(raw: unknown): string {
   return nickname;
 }
 
+/**
+ * Chave única de apelido: NFKC + minúsculas (pt-BR) + espaços colapsados.
+ * Serve para impedir que dois arautos diferentes usem o mesmo apelido
+ * (inclusive variando maiúsculas/minúsculas ou espaços).
+ * Nunca é enviada ao frontend.
+ */
+export function nicknameKeyOf(nickname: string): string {
+  return nickname
+    .normalize("NFKC")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase("pt-BR");
+}
+
 /* ------------------------------------------------------------------ */
 /* Consulta de apoio (somente leitura)                                 */
 /* ------------------------------------------------------------------ */
@@ -170,6 +185,24 @@ export const dayKeyAt = query({
  * Observação de produto: o XP comprova que a ação foi iniciada no site,
  * não que a publicação externa foi concluída.
  */
+/**
+ * Diz apenas se um apelido está livre (nenhum dado pessoal, nenhuma
+ * credencial). Existe para o frontend orientar quem está chegando agora:
+ * “apelido livre” = novo arauto; “em uso” = outra senha/pessoa.
+ */
+export const nicknameStatus = query({
+  args: { nickname: v.string() },
+  handler: async (ctx, args) => {
+    const nickname = normalizeNickname(args.nickname);
+    const nicknameKey = nicknameKeyOf(nickname);
+    const taken = await ctx.db
+      .query("players")
+      .withIndex("by_nicknameKey", (q) => q.eq("nicknameKey", nicknameKey))
+      .unique();
+    return { nickname, available: taken === null };
+  },
+});
+
 export const registerShare = mutation({
   args: {
     identifier: v.string(),
@@ -178,6 +211,7 @@ export const registerShare = mutation({
   handler: async (ctx, args) => {
     const identifier = normalizeIdentifier(args.identifier);
     const nickname = normalizeNickname(args.nickname);
+    const nicknameKey = nicknameKeyOf(nickname);
 
     const now = Date.now();
     const dayKey = dayKeySaoPaulo(now);
@@ -188,6 +222,20 @@ export const registerShare = mutation({
       .withIndex("by_identifier", (q) => q.eq("identifier", identifier))
       .unique();
 
+    // APELIDO ÚNICO: se a chave do apelido já pertence a outro
+    // identificador, esta pessoa está tentando usar o apelido de alguém.
+    // (Mutations do Convex são transacionais: a leitura acima ainda vale.)
+    const nicknameOwner = await ctx.db
+      .query("players")
+      .withIndex("by_nicknameKey", (q) => q.eq("nicknameKey", nicknameKey))
+      .unique();
+
+    if (nicknameOwner && nicknameOwner.identifier !== identifier) {
+      throw new ConvexError(
+        "Este apelido já pertence a outro arauto. Escolha outro apelido — ou informe a senha correta desse apelido."
+      );
+    }
+
     const alreadyAwarded = await ctx.db
       .query("shareDays")
       .withIndex("by_identifier_dayKey", (q) =>
@@ -196,10 +244,12 @@ export const registerShare = mutation({
       .unique();
 
     // Já pontuou hoje: não concede XP, apenas sincroniza o apelido.
+    // 1 XP por arauto por dia — o servidor recusa qualquer XP extra,
+    // não importa quantas vezes o botão seja clicado.
     if (alreadyAwarded) {
       let nicknameNow = player?.nickname ?? nickname;
       if (player && player.nickname !== nickname) {
-        await ctx.db.patch(player._id, { nickname, updatedAt: now });
+        await ctx.db.patch(player._id, { nickname, nicknameKey, updatedAt: now });
         nicknameNow = nickname;
       }
       return {
@@ -215,12 +265,18 @@ export const registerShare = mutation({
     let totalXp: number;
     if (player) {
       totalXp = player.totalXp + 1;
-      await ctx.db.patch(player._id, { nickname, totalXp, updatedAt: now });
+      await ctx.db.patch(player._id, {
+        nickname,
+        nicknameKey,
+        totalXp,
+        updatedAt: now,
+      });
     } else {
       totalXp = 1;
       await ctx.db.insert("players", {
         identifier,
         nickname,
+        nicknameKey,
         totalXp,
         createdAt: now,
         updatedAt: now,

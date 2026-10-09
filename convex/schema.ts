@@ -20,12 +20,19 @@ export default defineSchema({
   players: defineTable({
     identifier: v.string(),
     nickname: v.string(),
+    /**
+     * Apelido normalizado (NFKC + minúsculas) usado para garantir
+     * que cada apelido pertença a UM único arauto. "Arauto Alfa",
+     * "arauto alfa" e "Arauto  Alfa" colidem todos aqui.
+     */
+    nicknameKey: v.string(),
     totalXp: v.number(),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_identifier", ["identifier"])
-    .index("by_totalXp", ["totalXp"]),
+    .index("by_totalXp", ["totalXp"])
+    .index("by_nicknameKey", ["nicknameKey"]),
 
   /**
    * Deduplicação diária: no máximo uma linha concedida

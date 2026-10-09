@@ -10,9 +10,16 @@
 /*                                                   */
 /* IDENTIDADE: apelido + senha escolhidos pelo       */
 /* aventureiro. A senha NUNCA é enviada nem          */
-/* armazenada: o navegador deriva dela (PBKDF2        */
-/* SHA-256, 100k iterações) um código de 64 hex,      */
+/* armazenada: o navegador deriva dela (PBKDF2       */
+/* SHA-256, 100k iterações) um código de 64 hex,     */
 /* que é a chave do arauto no ranking.               */
+/*                                                   */
+/* COMPARTILHAMENTO: só existe XP depois de uma      */
+/* ação real de compartilhar (WhatsApp, Telegram,    */
+/* X, Facebook, folha nativa do sistema — que inclui */
+/* Discord, Instagram, Messenger — ou copiar link).  */
+/* E só 1 XP por arauto por dia: quem repete recebe   */
+/* “já recebido” e o servidor nem soma.              */
 /*                                                   */
 /* Segurança do frontend:                            */
 /*   • o XP nunca é enviado pelo navegador — quem    */
@@ -32,6 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var CONVEX_URL = 'https://perfect-walrus-826.convex.cloud';
     var PAGE_SIZE = 10;
     var STORAGE_NICK = 'taverna.arauto.nickname';
+
+    /* Site da Taverna usado nos links de compartilhamento. */
+    var SITE_URL = 'https://tavernarpgfm.com.br/';
 
     /* Derivador de chave (PBKDF2). O sal é público e fixo:
        ele serve para separar esta aplicação, não para segredo. */
@@ -57,7 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
         view: 'general',
         page: { general: 1, monthly: 1 },
         pageCount: { general: 1, monthly: 1 },
-        me: null
+        me: null,
+        sessao: null,       /* { apelido, chave } depois de validar no salão */
+        enviando: false
     };
 
     /* ------------------------------------------------- */
@@ -69,9 +81,12 @@ document.addEventListener('DOMContentLoaded', function () {
         password: document.getElementById('password'),
         status: document.getElementById('status'),
         meCard: document.getElementById('me-card'),
-        btnShare: document.getElementById('btn-share'),
-        btnMe: document.getElementById('btn-me'),
+        btnLogin: document.getElementById('btn-login'),
         btnClear: document.getElementById('btn-clear'),
+        shareBtns: Array.prototype.slice.call(document.querySelectorAll('.au-share-btn')),
+        btnApps: document.getElementById('btn-apps'),
+        shareHint: document.getElementById('share-hint'),
+        shareStatus: document.getElementById('share-status'),
         tabs: Array.prototype.slice.call(document.querySelectorAll('.au-tab')),
         rankPeriod: document.getElementById('rank-period'),
         rankStatus: document.getElementById('rank-status'),
@@ -82,6 +97,10 @@ document.addEventListener('DOMContentLoaded', function () {
         nextPage: document.getElementById('next-page'),
         champions: document.getElementById('champions')
     };
+
+    /* A seção do ranking pode não existir na página: nesse caso,
+       o script simplesmente não faz nada (nunca quebra o site). */
+    if (!el.nickname || !el.rankList) return;
 
     /* ------------------------------------------------- */
     /* Utilidades                                        */
@@ -150,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var subtle = window.crypto && window.crypto.subtle;
         if (!subtle || typeof window.TextEncoder !== 'function') {
             return Promise.reject(new Error(
-                'Por segurança, o Ranking dos Arautos precisa de uma conexão HTTPS: ' +
+                'Por segurança, o Ranking dos Arautos precisa de conexão HTTPS: ' +
                 'a sua senha é transformada aqui no navegador e nunca é enviada.'
             ));
         }
@@ -174,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Lê apelido + senha, valida e devolve a chave derivada.
+     * Lê apelido + senha, valida e devolve { apelido, chave }.
      * Em caso de problema, lança Error com mensagem pronta para exibir.
      */
     function identidadeAtual() {
@@ -248,6 +267,47 @@ document.addEventListener('DOMContentLoaded', function () {
     function executar(path, args) {
         return chamarConvex('/api/mutation', path, args);
     }
+
+    /* ------------------------------------------------- */
+    /* Link e texto de compartilhamento                  */
+    /* ------------------------------------------------- */
+
+    /** Link da Taverna com a assinatura de quem compartilhou. */
+    function linkDoArauto(apelido) {
+        return SITE_URL + '?arauto=' + encodeURIComponent(apelido);
+    }
+
+    function textoDoShare(apelido) {
+        return '🎧 Ouça a TAVERNA RPG FM — a trilha sonora das aventuras! ' +
+            'Sou ' + apelido + ' no Ranking dos Arautos.';
+    }
+
+    /* Endereços oficiais de compartilhamento (sem SDK, sem CDN). */
+    var CANAIS = {
+        whatsapp: function (url, texto) {
+            return 'https://api.whatsapp.com/send?text=' + encodeURIComponent(texto + ' ' + url);
+        },
+        telegram: function (url, texto) {
+            return 'https://t.me/share/url?url=' + encodeURIComponent(url) +
+                '&text=' + encodeURIComponent(texto);
+        },
+        x: function (url, texto) {
+            return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto) +
+                '&url=' + encodeURIComponent(url);
+        },
+        facebook: function (url) {
+            return 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+        }
+    };
+
+    var NOMES_CANAL = {
+        whatsapp: 'WhatsApp',
+        telegram: 'Telegram',
+        x: 'X / Twitter',
+        facebook: 'Facebook',
+        apps: 'folha de compartilhamento do sistema',
+        copiar: 'link copiado'
+    };
 
     /* ------------------------------------------------- */
     /* Renderização do "meu arauto"                      */
@@ -337,8 +397,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var valorXp = numero(state.view === 'monthly' ? entrada.xp : entrada.totalXp);
         xp.textContent = valorXp + ' XP';
 
-        // Guardados apenas para o destaque do próprio arauto
-        // (aplicado depois, por aplicarDestaque()).
+        /* Guardados apenas para o destaque do próprio arauto
+           (aplicado depois, por aplicarDestaque()). */
         item.setAttribute('data-position', String(posicao));
         item.setAttribute('data-nickname', String(entrada.nickname));
 
@@ -372,8 +432,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (posicaoDaLinha === numero(minhaPosicao) &&
                 apelidoDaLinha === String(state.me.nickname)) {
-                // Só a primeira linha compatível é destacada (dois arautos
-                // com o mesmo apelido e o mesmo XP são indistinguíveis aqui).
+                /* Só a primeira linha compatível é destacada (como os apelidos
+                   são únicos, isso é sempre o próprio arauto). */
                 linha.classList.add('is-me');
                 jaDestacou = true;
             }
@@ -425,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (entradas.length === 0) {
                 lista.appendChild(linhaVazia(
-                    'Nenhum arauto registrado ainda. Seja o primeiro a iniciar um compartilhamento!'
+                    'Nenhum arauto registrado ainda. Compartilhe a Taverna e seja o primeiro!'
                 ));
             } else {
                 entradas.forEach(function (entrada) {
@@ -458,6 +518,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function atualizarPager() {
         var pagina = state.page[state.view];
         var total = state.pageCount[state.view];
+        el.pager.hidden = false;   /* visível na carga inicial, não só depois de trocar de aba */
         el.pageInfo.textContent = 'Página ' + pagina + ' de ' + total;
         el.prevPage.disabled = pagina <= 1;
         el.nextPage.disabled = pagina >= total;
@@ -516,43 +577,52 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ------------------------------------------------- */
-    /* Ações                                             */
+    /* Sessão (apelido + senha) e XP do dia              */
     /* ------------------------------------------------- */
 
-    function consultarPosicao() {
-        var identidade;
-        try {
-            identidade = identidadeAtual();
-        } catch (erro) {
-            definirStatus(el.status, erro.message, 'error');
-            return Promise.resolve(null);
+    function jaPontuouHoje() {
+        return !!(state.me && state.me.sharedToday);
+    }
+
+    function atualizarCompartilhamento() {
+        var pronto = !!state.sessao;
+        var bloqueado = pronto && jaPontuouHoje();
+
+        el.shareBtns.forEach(function (botao) {
+            botao.disabled = !pronto || bloqueado || state.enviando;
+        });
+
+        if (!pronto) {
+            el.shareHint.textContent = '🔐 Entre no salão com apelido e senha para liberar o compartilhamento.';
+            return;
         }
+        if (bloqueado) {
+            el.shareHint.textContent = '✅ Você já garantiu o XP de hoje. Volte amanhã para ' +
+                'compartilhar novamente e somar mais um ponto.';
+            return;
+        }
+        el.shareHint.textContent = '📣 Escolha um canal: abrimos o compartilhamento e o servidor ' +
+            'registra o seu +1 XP do dia (1 por dia, sem repetir).';
+    }
 
-        definirStatus(el.status, 'Procurando o seu arauto no salão de honra…', null);
-
-        return identidade.then(function (dados) {
-            return consultar('ranking:me', { identifier: dados.chave }).then(function (resultado) {
-                state.me = resultado;
-                renderizarMe(resultado);
-                aplicarDestaque();
-
-                if (resultado) {
-                    storageSet(STORAGE_NICK, dados.apelido);
-                    definirStatus(el.status, 'Arauto encontrado no salão de honra.', 'ok');
-                } else {
-                    definirStatus(el.status,
-                        'Ainda não há registro para este apelido e senha — registre um ' +
-                        'compartilhamento para entrar no ranking.', 'warn');
-                }
-                return resultado;
-            });
-        }).catch(function (erro) {
-            definirStatus(el.status, erro.message, 'error');
-            return null;
+    /** Recarrega a posição do arauto no servidor. */
+    function atualizarMe(chave) {
+        return consultar('ranking:me', { identifier: chave }).then(function (eu) {
+            state.me = eu;
+            renderizarMe(eu);
+            aplicarDestaque();
+            atualizarCompartilhamento();
+            return eu;
         });
     }
 
-    function registrarCompartilhamento() {
+    /**
+     * "Entrar no salão": valida apelido + senha.
+     *   • arauto conhecido  → carrega a posição (e trava o XP do dia, se já pontuou);
+     *   • apelido livre     → é um arauto novo: liberado compartilhar para estrear;
+     *   • apelido em uso    → recusa: apelido pertence a outro (senha diferente).
+     */
+    function entrarNoSalao() {
         var identidade;
         try {
             identidade = identidadeAtual();
@@ -563,48 +633,271 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        el.btnShare.disabled = true;
-        definirStatus(el.status, 'Registrando o compartilhamento de hoje…', null);
+        el.btnLogin.disabled = true;
+        definirStatus(el.status, 'Consultando o salão dos arautos…', null);
 
         identidade.then(function (dados) {
-            return executar('share:registerShare', {
-                identifier: dados.chave,
-                nickname: dados.apelido
-            }).then(function (resultado) {
-                storageSet(STORAGE_NICK, dados.apelido);
-
-                if (resultado && resultado.awarded) {
-                    definirStatus(
-                        el.status,
-                        '🎉 +1 XP! Você agora tem ' + numero(resultado.totalXp) + ' XP. ' +
-                        'Obrigado por levar a Taverna para mais aventureiros!',
-                        'ok'
-                    );
-                } else {
-                    definirStatus(
-                        el.status,
-                        'Você já recebeu o XP de hoje (' + String(resultado.dayKey || '') +
-                        ' em São Paulo). Total: ' + numero(resultado.totalXp) +
-                        ' XP. Volte amanhã!',
-                        'warn'
-                    );
+            return consultar('ranking:me', { identifier: dados.chave }).then(function (eu) {
+                if (eu) {
+                    state.sessao = dados;
+                    storageSet(STORAGE_NICK, dados.apelido);
+                    return atualizarMe(dados.chave).then(function () {
+                        if (jaPontuouHoje()) {
+                            definirStatus(el.status,
+                                '🏅 Bem-vindo de volta, ' + dados.apelido +
+                                '! Você já recebeu o XP de hoje — volte amanhã para compartilhar ' +
+                                'novamente.', 'warn');
+                        } else {
+                            definirStatus(el.status,
+                                '🏅 Bem-vindo de volta, ' + dados.apelido +
+                                '! Você ainda pode compartilhar hoje e ganhar +1 XP.', 'ok');
+                        }
+                    });
                 }
 
-                // Atualiza o painel do arauto com os dados do servidor.
-                return consultar('ranking:me', { identifier: dados.chave }).then(function (eu) {
-                    state.me = eu;
-                    renderizarMe(eu);
-                    aplicarDestaque();
-                });
+                // Apelido ainda não tem registro: precisa estar livre para estrear.
+                return consultar('share:nicknameStatus', { nickname: dados.apelido })
+                    .then(function (info) {
+                        if (info && info.available) {
+                            state.sessao = dados;
+                            state.me = null;
+                            storageSet(STORAGE_NICK, dados.apelido);
+                            renderizarMe(null);
+                            aplicarDestaque();
+                            atualizarCompartilhamento();
+                            definirStatus(el.status,
+                                '✨ Apelido livre! Você é um novo arauto: escolha um canal de ' +
+                                'compartilhamento para ganhar o seu primeiro XP.', 'ok');
+                        } else {
+                            state.sessao = null;
+                            state.me = null;
+                            renderizarMe(null);
+                            atualizarCompartilhamento();
+                            definirStatus(el.status,
+                                '⚠️ Este apelido já pertence a outro arauto. Escolha outro apelido ' +
+                                'ou confira a senha (o apelido identifica você no ranking).', 'error');
+                        }
+                    });
             });
-        }).then(function () {
-            state.page[state.view] = 1;
-            carregarRanking();
         }).catch(function (erro) {
             definirStatus(el.status, erro.message, 'error');
         }).then(function () {
-            el.btnShare.disabled = false;
+            el.btnLogin.disabled = false;
         });
+    }
+
+    /* ------------------------------------------------- */
+    /* Compartilhamento + XP                             */
+    /* ------------------------------------------------- */
+
+    /**
+     * Fala com o servidor depois de uma ação REAL de compartilhamento.
+     * O XP quem decide é o backend (1 por dia por arauto).
+     */
+    function registrarXp(identidade, canal) {
+        return executar('share:registerShare', {
+            identifier: identidade.chave,
+            nickname: identidade.apelido
+        }).then(function (resultado) {
+            storageSet(STORAGE_NICK, identidade.apelido);
+
+            var via = NOMES_CANAL[canal] ? ' via ' + NOMES_CANAL[canal] : '';
+
+            if (resultado && resultado.awarded) {
+                definirStatus(el.shareStatus,
+                    '🎉 +1 XP registrado' + via + '! Você agora tem ' +
+                    numero(resultado.totalXp) + ' XP. Obrigado por levar a Taverna para ' +
+                    'mais aventureiros!', 'ok');
+            } else {
+                definirStatus(el.shareStatus,
+                    'Você já recebeu o XP de hoje (' + String(resultado.dayKey || '') +
+                    ' em São Paulo). Total: ' + numero(resultado.totalXp) +
+                    ' XP. Volte amanhã!', 'warn');
+            }
+
+            return atualizarMe(identidade.chave).then(function () {
+                state.page[state.view] = 1;
+                carregarRanking();
+            });
+        }).catch(function (erro) {
+            definirStatus(el.shareStatus, erro.message, 'error');
+            /* Um apelido recusado no servidor desfaz a sessão local. */
+            if (/apelido já pertence/i.test(erro.message)) {
+                state.sessao = null;
+                atualizarCompartilhamento();
+            }
+        });
+    }
+
+    /** Valida os campos e devolve a identidade, ou null (com mensagem). */
+    function identidadeParaCompartilhar() {
+        try {
+            return identidadeAtual();
+        } catch (erro) {
+            definirStatus(el.shareStatus, erro.message, 'error');
+            return null;
+        }
+    }
+
+    function podeCompartilhar() {
+        if (state.enviando) return false;
+        if (!state.sessao) {
+            definirStatus(el.shareStatus,
+                '🔐 Entre no salão (apelido + senha) antes de compartilhar.', 'warn');
+            return false;
+        }
+        if (jaPontuouHoje()) {
+            definirStatus(el.shareStatus,
+                'Você já recebeu o XP de hoje. Amanhã você pode compartilhar de novo.', 'warn');
+            return false;
+        }
+        return true;
+    }
+
+    function bloquearBotoes() {
+        state.enviando = true;
+        atualizarCompartilhamento();
+    }
+
+    function liberarBotoes() {
+        state.enviando = false;
+        atualizarCompartilhamento();
+    }
+
+/**
+     * Abre um endereço em NOVA ABA logo no clique (navegação de âncora, não
+     * window.open): assim a Taverna e a rádio continuam tocando na aba atual
+     * e o navegador não bloqueia nada. O XP é pedido ao servidor em seguida.
+     */
+    function abrirEmNovaAba(url) {
+        var ligacao = document.createElement('a');
+        ligacao.href = url;
+        ligacao.target = '_blank';
+        ligacao.rel = 'noopener';
+        document.body.appendChild(ligacao);
+        ligacao.click();
+        document.body.removeChild(ligacao);
+    }
+
+    /**
+     * Compartilhamento por endereço oficial (WhatsApp, Telegram, X, Facebook):
+     * abre a janela do canal e, feito isso, pede o XP ao servidor.
+     */
+    function compartilharPorLink(canal) {
+        if (!podeCompartilhar()) return;
+
+        // Campos inválidos: a mensagem de erro é publicada e nada é aberto.
+        var apelido = validarNickname(el.nickname.value);
+        if (!apelido || !validarSenha(el.password.value)) {
+            identidadeParaCompartilhar();
+            return;
+        }
+
+        abrirEmNovaAba(CANAIS[canal](linkDoArauto(apelido), textoDoShare(apelido)));
+
+        bloquearBotoes();
+        definirStatus(el.shareStatus, 'Abrindo o ' + NOMES_CANAL[canal] +
+            '… confirme o compartilhamento por lá.', null);
+
+        identidadeAtual().then(function (identidade) {
+            return registrarXp(identidade, canal);
+        }).catch(function (erro) {
+            definirStatus(el.shareStatus, erro.message, 'error');
+        }).then(liberarBotoes);
+    }
+
+    /**
+     * Folha de compartilhamento do sistema (no celular inclui WhatsApp,
+     * Discord, Instagram, Messenger…). O XP só é pedido se você concluir.
+     */
+    function compartilharPeloApp() {
+        if (!podeCompartilhar()) return;
+
+        var apelido = validarNickname(el.nickname.value);
+        if (!apelido) {
+            identidadeParaCompartilhar();
+            return;
+        }
+
+        if (typeof navigator.share !== 'function') {
+            definirStatus(el.shareStatus,
+                'Este navegador não tem a folha de compartilhamento. Use WhatsApp, Telegram, ' +
+                'X, Facebook ou “Copiar link”.', 'warn');
+            return;
+        }
+
+        bloquearBotoes();
+        definirStatus(el.shareStatus, 'Abrindo as opções de compartilhamento…', null);
+
+        navigator.share({
+            title: 'Taverna RPG FM — A Trilha Sonora das Aventuras',
+            text: textoDoShare(apelido),
+            url: linkDoArauto(apelido)
+        }).then(function () {
+            return identidadeAtual().then(function (identidade) {
+                return registrarXp(identidade, 'apps');
+            });
+        }).catch(function (erro) {
+            if (erro && erro.name === 'AbortError') {
+                definirStatus(el.shareStatus,
+                    'Compartilhamento cancelado — nenhum XP foi registrado.', 'warn');
+                return;
+            }
+            definirStatus(el.shareStatus, erro.message || 'Não foi possível compartilhar.', 'error');
+        }).then(liberarBotoes);
+    }
+
+    /** Copiar o link (para colar no Discord, em grupos, etc.). */
+    function compartilharCopiando() {
+        if (!podeCompartilhar()) return;
+
+        var apelido = validarNickname(el.nickname.value);
+        if (!apelido) {
+            identidadeParaCompartilhar();
+            return;
+        }
+
+        var texto = textoDoShare(apelido) + ' ' + linkDoArauto(apelido);
+        var copiar = (navigator.clipboard && navigator.clipboard.writeText)
+            ? navigator.clipboard.writeText(texto)
+            : Promise.reject(new Error('sem clipboard'));
+
+        bloquearBotoes();
+        definirStatus(el.shareStatus, 'Copiando o link da Taverna…', null);
+
+        copiar.then(function () {
+            return identidadeAtual().then(function (identidade) {
+                return registrarXp(identidade, 'copiar').then(function () {
+                    if (!jaPontuouHoje()) return;
+                    definirStatus(el.shareStatus,
+                        '🔗 Link copiado! Cole no Discord, em um grupo ou onde quiser. ' +
+                        'Seu XP de hoje já está garantido.', 'ok');
+                });
+            });
+        }).catch(function () {
+            definirStatus(el.shareStatus,
+                'Não foi possível copiar automaticamente. Selecione o link abaixo e copie ' +
+                'manualmente:', 'warn');
+            mostrarLinkManual(linkDoArauto(apelido));
+        }).then(liberarBotoes);
+    }
+
+    /** Deixa o link visível e selecionável quando o clipboard é bloqueado. */
+    function mostrarLinkManual(url) {
+        var caixa = document.createElement('div');
+        caixa.className = 'au-share-fallback';
+
+        var campo = document.createElement('input');
+        campo.type = 'text';
+        campo.className = 'au-input';
+        campo.readOnly = true;
+        campo.value = url;
+        campo.setAttribute('aria-label', 'Link da Taverna para copiar');
+
+        caixa.appendChild(campo);
+        el.shareStatus.insertAdjacentElement('afterend', caixa);
+        campo.focus();
+        campo.select();
     }
 
     function limparCampos() {
@@ -612,8 +905,12 @@ document.addEventListener('DOMContentLoaded', function () {
         el.password.value = '';
         storageRemove(STORAGE_NICK);
         state.me = null;
+        state.sessao = null;
         renderizarMe(null);
+        aplicarDestaque();
+        atualizarCompartilhamento();
         definirStatus(el.status, 'Campos limpos. Informe apelido e senha para continuar.', null);
+        definirStatus(el.shareStatus, '', null);
         el.nickname.focus();
     }
 
@@ -657,19 +954,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    el.btnShare.addEventListener('click', registrarCompartilhamento);
-    el.btnMe.addEventListener('click', consultarPosicao);
+    el.shareBtns.forEach(function (botao) {
+        botao.addEventListener('click', function () {
+            var canal = botao.getAttribute('data-canal');
+            if (canal === 'apps') compartilharPeloApp();
+            else if (canal === 'copiar') compartilharCopiando();
+            else if (CANAIS[canal]) compartilharPorLink(canal);
+        });
+    });
+
+    el.btnLogin.addEventListener('click', entrarNoSalao);
     el.btnClear.addEventListener('click', limparCampos);
 
     el.nickname.addEventListener('change', function () {
         var apelido = validarNickname(el.nickname.value);
         if (apelido) storageSet(STORAGE_NICK, apelido);
+        /* Trocar de apelido desfaz a sessão validada. */
+        if (state.sessao && state.sessao.apelido !== apelido) {
+            state.sessao = null;
+            state.me = null;
+            renderizarMe(null);
+            atualizarCompartilhamento();
+        }
     });
 
     el.password.addEventListener('keydown', function (evento) {
         if (evento.key === 'Enter') {
             evento.preventDefault();
-            registrarCompartilhamento();
+            entrarNoSalao();
         }
     });
 
@@ -677,7 +989,12 @@ document.addEventListener('DOMContentLoaded', function () {
     /* Início                                            */
     /* ------------------------------------------------- */
 
+    if (typeof navigator.share !== 'function' && el.btnApps) {
+        el.btnApps.hidden = true;
+    }
+
     el.nickname.value = storageGet(STORAGE_NICK);
     atualizarPeriodo();
+    atualizarCompartilhamento();
     carregarRanking();
 });
