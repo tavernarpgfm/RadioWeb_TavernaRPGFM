@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Taverna RPG FM · https://tavernarpgfm.com.br/
+
+  Sitemap do site. Contém apenas a página inicial, que é a única URL
+  pública e indexável do domínio.
+
+  As seções internas (Rádio, Guilda, Mapa, Crônicas, Ranking dos Arautos
+  e Portais da Taverna) vivem na MESMA página, em âncoras como /#rank e
+  /#portais: para o Google todas são a página inicial, então não entram
+  aqui como se fossem páginas separadas.
+
+  /ranking.html existe apenas como redirecionamento (meta refresh +
+  window.location + canonical + robots noindex) para /#rank e por isso
+  também não é listado.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://tavernarpgfm.com.br/</loc>
+        <lastmod>2026-10-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>

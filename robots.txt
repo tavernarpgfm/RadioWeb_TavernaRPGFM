@@ -1,0 +1,14 @@
+# Taverna RPG FM — https://tavernarpgfm.com.br/
+# ---------------------------------------------
+# Rastreamento liberado para todo o site: ele é 100% público
+# e estático (não há área logada, painel administrativo ou
+# diretório interno a esconder).
+#
+# O ranking.html não precisa ser bloqueado aqui: ele apenas
+# redireciona para /#rank e já responde com <meta name="robots"
+# content="noindex"> + canonical apontando para /#rank.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://tavernarpgfm.com.br/sitemap.xml

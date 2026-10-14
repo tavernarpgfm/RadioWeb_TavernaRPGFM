@@ -1,0 +1,317 @@
+/* ================================================= */
+/* TAVERNA RPG FM — Portais da Taverna               */
+/* assets/css/portais.css                            */
+/*                                                   */
+/* Estilos da seção “Portais da Taverna”, que vive   */
+/* DENTRO da index.html, logo depois do Ranking dos  */
+/* Arautos e antes das Crônicas.                     */
+/*                                                   */
+/* IMPORTANTE: tudo aqui está sob #portais ou sob    */
+/* .pt-*: a seção não redefine nada global, então o  */
+/* restante do site continua exatamente como era.    */
+/* Os tokens --pt-* vivem no próprio #portais.       */
+/* ================================================= */
+
+/* ---------- a seção, dentro da página principal ---------- */
+
+#portais {
+    --pt-gold:      #d4a24e;
+    --pt-gold-soft: #f0cf8f;
+    --pt-bronze:    #8a5a2b;
+    --pt-text:      #eadfc6;
+    --pt-tile:      #150e07;
+    --pt-hue:       240, 176, 96;
+
+    position: relative;
+    overflow: hidden;
+    padding: clamp(4.5rem, 10vw, 7.5rem) clamp(1.1rem, 5vw, 2.5rem);
+    border-top: 1px solid rgba(212, 162, 78, .2);
+    background:
+        radial-gradient(ellipse 85% 60% at 50% 0%, rgba(120, 70, 24, .18), transparent 70%),
+        radial-gradient(ellipse 75% 55% at 50% 115%, rgba(90, 58, 22, .18), transparent 70%),
+        linear-gradient(180deg, #0a0604 0%, #110a06 50%, #0b0704 100%);
+}
+
+/* Fogueira central que alimenta a luz dos portais (decorativo) */
+#portais::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: min(140vw, 1180px);
+    height: min(90vh, 600px);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, rgba(232, 120, 60, .1), transparent 65%);
+    pointer-events: none;
+}
+
+/* ---------- grade dos portais ---------- */
+
+.pt-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2.6vw, 1.8rem);
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+/* ---------- o portal ---------- */
+
+.pt-portal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(1.5rem, 3vw, 2.2rem) clamp(1rem, 2.4vw, 1.5rem) clamp(1.3rem, 2.6vw, 1.7rem);
+    overflow: hidden;
+    text-align: center;
+    text-decoration: none;
+    color: var(--pt-text);
+    background: linear-gradient(165deg, #241a10 0%, #150e07 100%);
+    border: 1px solid var(--pt-bronze);
+    border-radius: 16px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, .45);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease;
+}
+
+/* Filete dourado interno — mesmo padrão dos cartões de guilda */
+.pt-portal::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(212, 162, 78, .22);
+    border-radius: 11px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Luz que atravessa a placa do portal */
+.pt-portal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -70%;
+    width: 50%;
+    background: linear-gradient(115deg, transparent, rgba(255, 235, 190, .16), transparent);
+    transform: skewX(-14deg);
+    pointer-events: none;
+    z-index: 3;
+    transition: left .75s ease;
+}
+
+/* ---------- o arco do portal (moldura do ícone) ---------- */
+
+.pt-gate {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(62px, 15vw, 76px);
+    aspect-ratio: 1;
+    margin-bottom: .9rem;
+    border: 1px solid rgba(212, 162, 78, .4);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 42%, rgba(240, 176, 96, .2), rgba(20, 13, 7, .92) 72%);
+    box-shadow:
+        inset 0 0 22px rgba(0, 0, 0, .6),
+        0 0 20px rgba(212, 162, 78, .16);
+    transition: box-shadow .45s ease, border-color .45s ease, transform .35s ease;
+}
+
+/* Anel rúnico que gira devagar */
+.pt-gate::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 1px dashed rgba(212, 162, 78, .32);
+    border-radius: 50%;
+    animation: ptRune 30s linear infinite;
+}
+
+/* Halo que se acende quando o portal é atravessado */
+.pt-gate-glow {
+    position: absolute;
+    inset: -18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--pt-hue), .42) 0%, transparent 68%);
+    opacity: .38;
+    transform: scale(.85);
+    pointer-events: none;
+    transition: opacity .45s ease, transform .55s ease;
+}
+
+.pt-icon {
+    width: 46%;
+    height: auto;
+    color: var(--pt-gold-soft);
+    fill: var(--pt-gold-soft);
+    filter: drop-shadow(0 3px 10px rgba(0, 0, 0, .6));
+}
+
+/* Matiz própria de cada portal — aparece só como luz do halo */
+.pt-portal--kick      { --pt-hue: 108, 236, 76; }
+.pt-portal--youtube   { --pt-hue: 232, 62, 62; }
+.pt-portal--instagram { --pt-hue: 214, 85, 154; }
+.pt-portal--tiktok    { --pt-hue: 70, 224, 234; }
+
+/* Recortes internos dos ícones (mesmo tom do fundo do arco) */
+.pt-icon-cut {
+    fill: #120c06;
+}
+
+/* ---------- textos do portal ---------- */
+
+.pt-name {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(1rem, 2.4vw, 1.18rem);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--pt-gold-soft);
+    text-shadow: 0 3px 14px rgba(0, 0, 0, .6);
+}
+
+.pt-call {
+    margin-top: .35rem;
+    color: #c8b68f;
+    font-size: clamp(.92rem, 2vw, 1.02rem);
+    font-style: italic;
+    line-height: 1.45;
+}
+
+/* Indicação clara de que o portal é clicável */
+.pt-go {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    margin-top: 1.05rem;
+    padding: .5rem .95rem;
+    border: 1px solid rgba(212, 162, 78, .35);
+    border-radius: 999px;
+    background: rgba(212, 162, 78, .07);
+    font-family: var(--font-title);
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--pt-gold);
+    transition: background .35s ease, border-color .35s ease, color .35s ease, gap .35s ease;
+}
+
+.pt-go-arrow {
+    font-size: .9rem;
+    line-height: 1;
+}
+
+/* ---------- hover (somente onde há cursor) ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+    #portais .pt-portal:hover {
+        transform: translateY(-8px);
+        border-color: var(--pt-gold);
+        box-shadow:
+            0 26px 60px rgba(0, 0, 0, .6),
+            0 0 42px rgba(212, 162, 78, .2);
+    }
+
+    #portais .pt-portal:hover::after {
+        left: 125%;
+    }
+
+    #portais .pt-portal:hover .pt-gate {
+        border-color: var(--pt-gold);
+        box-shadow:
+            inset 0 0 22px rgba(0, 0, 0, .5),
+            0 0 34px rgba(240, 176, 96, .38);
+    }
+
+    #portais .pt-portal:hover .pt-gate::before {
+        border-color: rgba(240, 207, 143, .6);
+    }
+
+    #portais .pt-portal:hover .pt-gate-glow {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+
+    #portais .pt-portal:hover .pt-name {
+        color: #fff3d6;
+    }
+
+    #portais .pt-portal:hover .pt-go {
+        gap: .6rem;
+        border-color: var(--pt-gold);
+        background: rgba(212, 162, 78, .18);
+        color: var(--pt-gold-soft);
+    }
+}
+
+/* ---------- retorno ao toque (mobile / touch) ---------- */
+
+#portais .pt-portal:active {
+    transform: translateY(-3px) scale(.985);
+    border-color: var(--pt-gold);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, .6),
+        0 0 0 2px rgba(212, 162, 78, .3);
+}
+
+#portais .pt-portal:active .pt-gate {
+    transform: scale(.95);
+}
+
+#portais .pt-portal:active .pt-gate-glow {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* ---------- animação ---------- */
+
+@keyframes ptRune {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ---------- responsividade ---------- */
+
+/* Desktop largo: os quatro portais lado a lado */
+@media (min-width: 1000px) {
+    .pt-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Celular: duas colunas confortáveis ao toque */
+@media (max-width: 600px) {
+    .pt-portal {
+        padding: 1.35rem .8rem 1.25rem;
+        border-radius: 14px;
+    }
+
+    .pt-portal::before {
+        inset: 5px;
+        border-radius: 10px;
+    }
+
+    .pt-gate {
+        margin-bottom: .7rem;
+    }
+
+    .pt-call {
+        font-size: .92rem;
+    }
+
+    .pt-go {
+        padding: .45rem .7rem;
+        letter-spacing: .12em;
+    }
+}
+
+/* Telas muito estreitas: uma coluna, com espaço de sobra para o toque */
+@media (max-width: 379px) {
+    .pt-grid {
+        grid-template-columns: 1fr;
+    }
+}
