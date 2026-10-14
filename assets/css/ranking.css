@@ -40,9 +40,15 @@
     border-bottom: 1px solid rgba(212, 162, 78, 0.22);
     background-color: var(--au-bg);
     background-image:
+        /* véu que preserva a leitura e dissolve o fim da imagem no fundo */
+        linear-gradient(180deg, rgba(10, 6, 4, 0.6) 0%, rgba(10, 6, 4, 0.74) 30%, rgba(10, 6, 4, 0.95) 58%, var(--au-bg) 76%),
         radial-gradient(circle at 50% 0%, rgba(232, 120, 60, 0.14), transparent 55%),
         radial-gradient(circle at 50% 120%, rgba(212, 162, 78, 0.10), transparent 60%),
-        linear-gradient(180deg, #0a0604 0%, #100a06 45%, #0a0604 100%);
+        /* moldura do Salão dos Arautos (anexo: “Fundo Rank.jpg”) */
+        url("../imagens/fundo-rank.webp");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% auto;
 }
 
 /* Raiz de escopo: as cores/tipografia do ranking valem SÓ aqui dentro,
@@ -677,6 +683,46 @@
 
 .au-footer-note {
     opacity: 0.8;
+}
+
+/* ---------- brasão de nível do arauto (bronze / prata) ---------- */
+
+.au-nivel {
+    /* O style.css global deixa `img { display: block }`: aqui o brasão precisa
+       ficar na MESMA linha do apelido, então voltamos para inline-block. */
+    display: inline-block;
+    width: auto;
+    height: 1.6em;
+    margin-right: .42em;
+    vertical-align: middle;
+    /* O brasão é servido sobre fundo preto: `lighten` dissolve esse preto
+       no painel escuro sem precisar recortar o arquivo original. */
+    mix-blend-mode: lighten;
+    pointer-events: none;
+}
+
+.au-me-name .au-nivel {
+    height: 1.8em;
+}
+
+.au-nivel-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1.2rem;
+    margin: 14px 0 0;
+    color: var(--au-muted);
+    font-size: .84rem;
+}
+
+.au-nivel-legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.au-nivel-legenda .au-nivel {
+    margin-right: 0;
 }
 
 /* ---------- responsivo ---------- */

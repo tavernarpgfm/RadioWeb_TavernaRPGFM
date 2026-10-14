@@ -27,8 +27,12 @@
     padding: clamp(4.5rem, 10vw, 7.5rem) clamp(1.1rem, 5vw, 2.5rem);
     border-top: 1px solid rgba(212, 162, 78, .2);
     background:
+        /* véu que preserva a leitura dos portais sobre a imagem */
+        linear-gradient(180deg, rgba(10, 6, 4, .84) 0%, rgba(17, 10, 6, .7) 48%, rgba(11, 7, 4, .9) 100%),
         radial-gradient(ellipse 85% 60% at 50% 0%, rgba(120, 70, 24, .18), transparent 70%),
         radial-gradient(ellipse 75% 55% at 50% 115%, rgba(90, 58, 22, .18), transparent 70%),
+        /* salão dos portais (anexo: “funto portais.jpg”) */
+        url("../imagens/fundo-portais.webp") center / cover no-repeat,
         linear-gradient(180deg, #0a0604 0%, #110a06 50%, #0b0704 100%);
 }
 

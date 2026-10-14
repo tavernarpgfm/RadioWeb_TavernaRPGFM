@@ -27,6 +27,10 @@
 /*   • apelidos são sempre renderizados com          */
 /*     textContent (nunca innerHTML);                */
 /*   • nada de senha ou chave é gravado no storage.  */
+/*                                                   */
+/* NÍVEIS: o brasão exibido ao lado do apelido segue  */
+/* o XP do arauto — nível 1 (Bronze) a partir de     */
+/* 1 XP e nível 2 (Prata) a partir de 10 XP.         */
 /* ================================================= */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -57,6 +61,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var MESES = [
         'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
         'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    ];
+
+    /* Níveis dos arautos (brasão ao lado do apelido).
+       Nível 1 — Bronze: a partir de 1 XP.
+       Nível 2 — Prata:  a partir de 10 XP. */
+    var NIVEIS = [
+        { nivel: 1, nome: 'Bronze', minimo: 1,  icone: 'assets/imagens/icone-arauto-bronze.webp' },
+        { nivel: 2, nome: 'Prata',  minimo: 10, icone: 'assets/imagens/icone-arauto-prata.webp' }
     ];
 
     /* ------------------------------------------------- */
@@ -217,6 +229,31 @@ document.addEventListener('DOMContentLoaded', function () {
         return isFinite(n) ? n : 0;
     }
 
+    /** Maior nível alcançado com o XP informado (null abaixo do 1º nível). */
+    function nivelDoXp(xp) {
+        var alcancado = null;
+        for (var i = 0; i < NIVEIS.length; i++) {
+            if (numero(xp) >= NIVEIS[i].minimo) alcancado = NIVEIS[i];
+        }
+        return alcancado;
+    }
+
+    /** Brasão do nível do arauto — null enquanto ele ainda não tem XP. */
+    function criarBrasao(xp) {
+        var nivel = nivelDoXp(xp);
+        if (!nivel) return null;
+
+        var brasao = document.createElement('img');
+        brasao.className = 'au-nivel';
+        brasao.src = nivel.icone;
+        brasao.alt = 'Nível ' + nivel.nivel + ' — ' + nivel.nome;
+        brasao.width = 268;
+        brasao.height = 400;
+        brasao.loading = 'lazy';
+        brasao.decoding = 'async';
+        return brasao;
+    }
+
     function mensagemDoErro(payload, fallback) {
         if (payload && typeof payload === 'object') {
             if (typeof payload.errorData === 'string' && payload.errorData.trim() !== '') {
@@ -338,14 +375,23 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        var totalXp = numero(dados.totalXp);
+        var nivel = nivelDoXp(totalXp);
+
         var nome = document.createElement('p');
         nome.className = 'au-me-name';
-        nome.textContent = '🏅 ' + dados.nickname;
+        var brasaoMe = criarBrasao(totalXp);
+        if (brasaoMe) nome.appendChild(brasaoMe);
+        nome.appendChild(document.createTextNode('🏅 ' + dados.nickname));
         el.meCard.appendChild(nome);
 
         var grade = document.createElement('div');
         grade.className = 'au-me-grid';
         grade.appendChild(criarStat('XP total', numero(dados.totalXp)));
+        grade.appendChild(criarStat(
+            'Nível',
+            nivel ? nivel.nivel + ' — ' + nivel.nome : '—'
+        ));
         grade.appendChild(criarStat('Posição geral', '#' + numero(dados.generalPosition)));
         grade.appendChild(criarStat('XP do mês', numero(dados.monthlyXp)));
         grade.appendChild(criarStat(
@@ -388,13 +434,17 @@ document.addEventListener('DOMContentLoaded', function () {
         badge.className = 'au-pos';
         badge.textContent = medalha(posicao);
 
+        /* O XP exibido na linha é o mesmo valor que decide o brasão do nível. */
+        var valorXp = numero(state.view === 'monthly' ? entrada.xp : entrada.totalXp);
+
         var nome = document.createElement('span');
         nome.className = 'au-name';
-        nome.textContent = entrada.nickname;   /* <-- sempre textContent */
+        var brasao = criarBrasao(valorXp);
+        if (brasao) nome.appendChild(brasao);
+        nome.appendChild(document.createTextNode(entrada.nickname));  /* <-- sempre textContent */
 
         var xp = document.createElement('span');
         xp.className = 'au-xp';
-        var valorXp = numero(state.view === 'monthly' ? entrada.xp : entrada.totalXp);
         xp.textContent = valorXp + ' XP';
 
         /* Guardados apenas para o destaque do próprio arauto

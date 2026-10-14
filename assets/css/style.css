@@ -493,7 +493,11 @@ header[id] {
 
 .mapa {
     background:
+        /* véu que mantém o mapa, os rótulos e o texto legíveis sobre a imagem */
+        linear-gradient(180deg, rgba(11, 7, 4, .8) 0%, rgba(11, 7, 4, .68) 45%, rgba(11, 7, 4, .86) 100%),
         radial-gradient(ellipse 85% 60% at 50% 0%, rgba(60, 40, 20, .2), transparent 70%),
+        /* paisagem do território (anexo: “fundo mapa taverna.jpg”) */
+        url("../imagens/fundo-mapa-taverna.webp") center / cover no-repeat,
         linear-gradient(180deg, #0b0704 0%, #100a05 50%, #0b0704 100%);
 }
 
