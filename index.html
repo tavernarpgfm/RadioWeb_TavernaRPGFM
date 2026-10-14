@@ -25,6 +25,49 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Taverna RPG FM — A Trilha Sonora das Aventuras">
 
+    <!-- Dados estruturados (JSON-LD) — marca, logo e perfis oficiais.
+         RadioStation é uma Organização no schema.org, então este bloco
+         responde também pela identidade da Taverna como organização. -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "WebSite",
+                    "@id": "https://tavernarpgfm.com.br/#site",
+                    "url": "https://tavernarpgfm.com.br/",
+                    "name": "Taverna RPG FM",
+                    "inLanguage": "pt-BR"
+                },
+                {
+                    "@type": "RadioStation",
+                    "@id": "https://tavernarpgfm.com.br/#taverna",
+                    "name": "Taverna RPG FM",
+                    "url": "https://tavernarpgfm.com.br/",
+                    "description": "A trilha sonora das aventuras. Uma rádio para aventureiros, mestres e amantes de RPG.",
+                    "slogan": "A Trilha Sonora das Aventuras",
+                    "knowsLanguage": "pt-BR",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://tavernarpgfm.com.br/assets/imagens/radioplayer.png",
+                        "width": 1536,
+                        "height": 1024,
+                        "caption": "Taverna RPG FM — logo oficial da rádio"
+                    },
+                    "image": "https://tavernarpgfm.com.br/assets/imagens/og-taverna.jpg",
+                    "sameAs": [
+                        "https://kick.com/tavernarpgfm",
+                        "https://www.youtube.com/@TavernaRPGFM",
+                        "https://www.instagram.com/tavernarpgfm/",
+                        "https://www.tiktok.com/@tavernarpgfm"
+                    ],
+                    "areaServed": { "@type": "Country", "name": "Brasil" },
+                    "address": { "@type": "PostalAddress", "addressCountry": "BR" }
+                }
+            ]
+        }
+    </script>
+
     <!-- Tipografia -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
