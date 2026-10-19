@@ -20,6 +20,10 @@ const root = dirname(fileURLToPath(import.meta.url));
 
 const CLASSIC_SCRIPTS = ['script.js', 'qrcode.js', 'qr.js'];
 
+// Imagens citadas apenas dentro dos scripts clássicos: o Vite não as
+// processa, então precisam ser copiadas à mão para o dist/.
+const CLASSIC_IMAGES = ['assets/imagens/logo-querencia.webp'];
+
 export default defineConfig({
     base: './',
     plugins: [
@@ -29,6 +33,13 @@ export default defineConfig({
                 CLASSIC_SCRIPTS.forEach(function (file) {
                     const src = resolve(root, 'assets/js', file);
                     const dest = resolve(root, 'dist/assets/js', file);
+                    mkdirSync(dirname(dest), { recursive: true });
+                    copyFileSync(src, dest);
+                });
+
+                CLASSIC_IMAGES.forEach(function (file) {
+                    const src = resolve(root, file);
+                    const dest = resolve(root, 'dist', file);
                     mkdirSync(dirname(dest), { recursive: true });
                     copyFileSync(src, dest);
                 });

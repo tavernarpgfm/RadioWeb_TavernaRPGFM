@@ -114,6 +114,8 @@ document.addEventListener('DOMContentLoaded', function () {
             tipo: "Guilda Oficial",
             descricao: "Parceiro Oficial da Taverna RPG FM. Um aliado que fortalece a jornada dos aventureiros.",
             url: "https://docs.google.com/forms/d/e/1FAIpQLSfR5ggNMMff-V4VPoj1ZhI9a-PFJEegHOaP0HWy6WbXl3absg/viewform",
+            // brasão da guilda; `icone` fica como reserva para guildas sem logo
+            logo: "assets/imagens/logo-querencia.webp",
             icone: "⚔️",
             mapa: { x: 716, y: 336 }
         }
@@ -128,7 +130,11 @@ document.addEventListener('DOMContentLoaded', function () {
             card.innerHTML =
                 '<span class="guild-card-seal" aria-hidden="true"><span>✦</span></span>' +
                 '<span class="guild-card-level">🛡️ ' + g.tipo.toUpperCase() + '</span>' +
-                '<p class="guild-card-crest" aria-hidden="true">' + g.icone + '</p>' +
+                '<p class="guild-card-crest' + (g.logo ? ' guild-card-crest--logo' : '') + '" aria-hidden="true">' +
+                    (g.logo
+                        ? '<img class="guild-card-logo" src="' + g.logo + '" width="800" height="800" alt="" loading="lazy" decoding="async">'
+                        : g.icone) +
+                '</p>' +
                 '<h3 class="guild-card-name">' + g.nome + '</h3>' +
                 '<p class="guild-card-desc">' + g.descricao + '</p>' +
                 '<a class="btn-card" href="' + g.url + '" target="_blank" rel="noopener">🏰 VISITAR GUILDA</a>';
@@ -148,8 +154,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mapSvg && mapWrap && mapTooltip) {
         const NS = "http://www.w3.org/2000/svg";
 
+        // Marcadores do mapa: as guildas com cartão na seção + aliados que
+        // aparecem apenas no território (sem cartão próprio).
+        const marcadoresMapa = guildas.concat([
+            {
+                nome: "King Aslan OT",
+                rotulo: "GUILDA KING ASLAN",
+                tipo: "Guilda Aliada",
+                descricao: "Servidor global de King Aslan OT. Crie sua conta pelo convite da Taverna.",
+                url: "https://kingaslanglobal.com/?subtopic=createaccount&ref=4504",
+                cta: "⚔️ CRIAR CONTA",
+                icone: "👑",
+                mapa: { x: 664, y: 434 }
+            }
+        ]);
+
         // Injeta um marcador de guilda no SVG
-        guildas.forEach(function (g, index) {
+        marcadoresMapa.forEach(function (g, index) {
             const x = g.mapa.x;
             const y = g.mapa.y;
 
@@ -159,6 +180,13 @@ document.addEventListener('DOMContentLoaded', function () {
             group.setAttribute('role', 'button');
             group.setAttribute('aria-label', 'Guilda ' + g.nome);
             group.setAttribute('data-index', String(index));
+
+            // Área de toque generosa (inativa no desktop, ativa no celular via CSS)
+            const hit = document.createElementNS(NS, 'circle');
+            hit.setAttribute('class', 'map-guild-hit');
+            hit.setAttribute('cx', x);
+            hit.setAttribute('cy', y);
+            hit.setAttribute('r', '62');
 
             const pulse = document.createElementNS(NS, 'circle');
             pulse.setAttribute('class', 'map-guild-pulse');
@@ -181,8 +209,9 @@ document.addEventListener('DOMContentLoaded', function () {
             label.setAttribute('x', x);
             label.setAttribute('y', y + 34);
             label.setAttribute('text-anchor', 'middle');
-            label.textContent = 'GUILDA DA ' + g.nome.split(' ')[0].toUpperCase();
+            label.textContent = g.rotulo || 'GUILDA DA ' + g.nome.split(' ')[0].toUpperCase();
 
+            group.appendChild(hit);
             group.appendChild(pulse);
             group.appendChild(shield);
             group.appendChild(label);
@@ -193,14 +222,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let tooltipAnchor = null;
 
         function showTooltip(marker) {
-            const g = guildas[parseInt(marker.getAttribute('data-index'), 10)];
+            const g = marcadoresMapa[parseInt(marker.getAttribute('data-index'), 10)];
             if (!g) return;
 
             mapTooltip.innerHTML =
                 '<span class="tip-type">🛡️ ' + g.tipo.toUpperCase() + '</span>' +
                 '<strong>' + g.nome + '</strong>' +
                 '<p>' + g.descricao + '</p>' +
-                '<a href="' + g.url + '" target="_blank" rel="noopener">🏰 VISITAR GUILDA</a>';
+                '<a href="' + g.url + '" target="_blank" rel="noopener">' + (g.cta || '🏰 VISITAR GUILDA') + '</a>';
 
             if (isSmallScreen.matches) {
                 mapTooltip.classList.add('mobile');
@@ -208,8 +237,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 mapTooltip.style.top = '';
             } else {
                 mapTooltip.classList.remove('mobile');
-                mapTooltip.style.left = (g.mapa.x / 1000 * 100) + '%';
-                mapTooltip.style.top = (g.mapa.y / 620 * 100) + '%';
+                // Ancorar na caixa do SVG (e não na moldura inteira): a moldura
+                // inclui a legenda, o que empurrava o tooltip para baixo até
+                // cobrir o próprio marcador e fazia o hover piscar.
+                const svgBox = mapSvg.getBoundingClientRect();
+                const wrapBox = mapWrap.getBoundingClientRect();
+                const x = svgBox.left - wrapBox.left + (g.mapa.x / 1000) * svgBox.width;
+                const y = svgBox.top - wrapBox.top + (g.mapa.y / 620) * svgBox.height;
+                mapTooltip.style.left = (x / wrapBox.width * 100) + '%';
+                mapTooltip.style.top = (y / wrapBox.height * 100) + '%';
             }
 
             mapTooltip.classList.add('show');
@@ -226,9 +262,20 @@ document.addEventListener('DOMContentLoaded', function () {
             marker.addEventListener('mouseleave', function () { hideTooltip(); });
             marker.addEventListener('focus', function () { showTooltip(marker); });
             marker.addEventListener('blur', function () { hideTooltip(); });
+            // No toque, o navegador dispara mouseenter e click em sequência:
+            // alternar aqui fechava o tooltip que o próprio toque acabou de abrir.
+            // Por isso, no dedo, o clique só garante que ele está aberto; no
+            // mouse a alternância continua como sempre foi.
+            let ponteiroToque = false;
+            marker.addEventListener('pointerdown', function (e) {
+                ponteiroToque = e.pointerType === 'touch';
+            });
+
             marker.addEventListener('click', function (e) {
                 e.stopPropagation();
-                if (tooltipAnchor === marker) {
+                if (ponteiroToque) {
+                    showTooltip(marker);
+                } else if (tooltipAnchor === marker) {
                     hideTooltip();
                 } else {
                     showTooltip(marker);
