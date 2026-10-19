@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const guildas = [
         {
-            nome: "Querência Imóveis",
+            nome: "Querência Consultoria Imobiliária",
             tipo: "Guilda Oficial",
             descricao: "Parceiro Oficial da Taverna RPG FM. Um aliado que fortalece a jornada dos aventureiros.",
             url: "https://docs.google.com/forms/d/e/1FAIpQLSfR5ggNMMff-V4VPoj1ZhI9a-PFJEegHOaP0HWy6WbXl3absg/viewform",
